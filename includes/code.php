@@ -7,7 +7,7 @@ include_once 'functions.php';
 
 
 ?>
-		 <!--comapany profile add-->
+		
 		 <?php
 		 	if (isset($_REQUEST['company_submit'])) {
 		 			if ($_FILES['logo']['tmp_name']) {
@@ -93,10 +93,7 @@ include_once 'functions.php';
 		   ?>
 
 	
-		 <!--comapany profile end-->
 
-
-<!-- customer add -->
 <?php
 
 ?>
@@ -116,6 +113,7 @@ if (!empty($_POST['action']) AND $_POST['action']=="add_new_user") {
 
 		$data_user=[
 			'fullname' => @$_REQUEST['fullname'],
+			'warehouse_id' => @$_REQUEST['warehouse_id'],
 			'username' => $_REQUEST['username'],
 			'email' => $_REQUEST['email'],
 			'phone' => $_REQUEST['phone'],
@@ -129,7 +127,6 @@ if (!empty($_POST['action']) AND $_POST['action']=="add_new_user") {
 		if(insert_data($dbc,"users",$data_user)){
 			$msg = "User Added Successfully";
 			$sts ="success";
-			redirect("users.php",500);
 		}else{
 			$msg =mysqli_error($dbc);
 			$sts = "error";
@@ -139,7 +136,6 @@ if (!empty($_POST['action']) AND $_POST['action']=="add_new_user") {
 			if(update_data($dbc,"users",$data_user,'user_id',$_REQUEST['new_user_id'])){
 			$msg = "Users Updated Successfully";
 			$sts ="success";
-			redirect("users.php",500);
 		}else{
 			$msg =mysqli_error($dbc);
 
@@ -147,7 +143,7 @@ if (!empty($_POST['action']) AND $_POST['action']=="add_new_user") {
 		}
 
 	}
-		
+		header('Content-Type: application/json');
 		echo json_encode(['msg'=>$msg,'sts'=>$sts]);
 	}
 
@@ -255,6 +251,79 @@ function removedir($dir) {
   }
  } 
  
+ if (!empty($_POST['action']) and $_POST['action'] == "add_new_warehouse") {
+
+
+	$data_user = [
+		'warehouse_name' => @$_REQUEST['warehouse_name'],
+		'warehouse_email' => $_REQUEST['warehouse_email'],
+		'warehouse_phone' => $_REQUEST['warehouse_phone'],
+		'warehouse_address' => $_REQUEST['warehouse_address'],
+		'warehouse_status' => $_REQUEST['warehouse_status'],
+	];
+
+
+	if ($_REQUEST['new_warehouse_id'] == '') {
+		if (insert_data($dbc, "warehouse", $data_user)) {
+			$msg = "Warehouse Added Successfully";
+			$sts = "success";
+		} else {
+			$msg = mysqli_error($dbc);
+			$sts = "error";
+		}
+	} else {
+
+		if (update_data($dbc, "warehouse", $data_user, 'warehouse_id', $_REQUEST['new_warehouse_id'])) {
+			$msg = "Data Updated Successfully";
+			$sts = "success";
+		} else {
+			$msg = mysqli_error($dbc);
+
+			$sts = "error";
+		}
+	}
+
+	header('Content-Type: application/json');
+	echo json_encode(['msg' => $msg, 'sts' => $sts]);
+}
+ if (!empty($_POST['action']) and $_POST['action'] == "add_new_rack") {
+
+
+	$data_user = [
+		'name' => @$_REQUEST['rack_name'],
+		'warehouse_id' => @$_REQUEST['warehouse_id'],
+		'zone' => $_REQUEST['rack_zone'],
+		'capacity' => $_REQUEST['rack_capacity'],
+		'status' => $_REQUEST['rack_status'],
+	];
+
+
+	if ($_REQUEST['new_rack_id'] == '') {
+		if (insert_data($dbc, "racks", $data_user)) {
+			$msg = "Rack Added Successfully";
+			$sts = "success";
+			$_REQUEST = [''];
+		} else {
+			$msg = mysqli_error($dbc);
+			$sts = "error";
+		}
+	} else {
+		
+		if (update_data($dbc, "racks", $data_user, 'rack_id', $_REQUEST['new_rack_id'])) {
+			$_REQUEST = ['rack_edit_id' => ''];
+			$msg = "Data Updated Successfully";
+			$sts = "success";
+		} else {
+			$msg = mysqli_error($dbc);
+			
+			$sts = "error";
+		}
+	}
+	
+	header('Content-Type: application/json');
+	echo json_encode(['msg' => $msg, 'sts' => $sts]);
+	$_REQUEST = [];
+}
 ?>
 
 

@@ -389,6 +389,12 @@ if (!empty($_REQUEST['action']) and $_REQUEST['action'] == "product_module") {
 		'availability' => @$_REQUEST['availability'],
 		'status' => 1,
 		'quantity_instock' => '0',
+		'sku' => @$_REQUEST['sku'],
+		'purchase_tax' => @$_REQUEST['purchase_tax'],
+		'length' => @$_REQUEST['length'],
+		'width' => @$_REQUEST['width'],
+		'height' => @$_REQUEST['height'],
+		'uom' => @$_REQUEST['uom'],
 	];
 	if ($_REQUEST['product_id'] == "") {
 

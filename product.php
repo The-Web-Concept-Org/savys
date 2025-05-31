@@ -116,6 +116,44 @@ $btn_name = isset($_REQUEST['edit_product_id']) ? "Update" : "Add";
                     </button>
                   </div>
                 </div>
+                <div class="form-group row">
+                  <div class="col-md-2 mb-3">
+                    <label>SKU</label>
+                    <input type="number" min="0" class="form-control" id="sku"
+                      placeholder="SKU" name="sku" autocomplete="off"
+                      required value="<?= @$fetchproduct['sku'] ?>">
+                  </div>
+                  <div class="col-md-2 mb-3">
+                    <label>Purchase Tax</label>
+                    <input type="number" min="0" class="form-control" id="purchase_tax"
+                      placeholder="Tax Here" name="purchase_tax" autocomplete="off"
+                      required value="<?= @$fetchproduct['purchase_tax'] ?>">
+                  </div>
+                  <div class="col-md-2 mb-3">
+                    <label>UOM</label>
+                    <input type="text"  class="form-control" id="uom"
+                      placeholder="UOM Here" name="uom" autocomplete="off"
+                      required value="<?= @$fetchproduct['uom'] ?>">
+                  </div>
+                  <div class="col-md-2 mb-3">
+                    <label>Length</label>
+                    <input type="number" min="0" class="form-control" id="length"
+                      placeholder="Length" name="length" autocomplete="off"
+                      required value="<?= @$fetchproduct['length'] ?>">
+                  </div>
+                  <div class="col-md-2 mb-3">
+                    <label>Width</label>
+                    <input type="number" min="0" class="form-control" id="width"
+                      placeholder="Hidth Here" name="width" autocomplete="off"
+                      required value="<?= @$fetchproduct['width'] ?>">
+                  </div>
+                  <div class="col-md-2 mb-3">
+                    <label>Height</label>
+                    <input type="number" min="0" class="form-control" id="height"
+                      placeholder="Height Here" name="height" autocomplete="off"
+                      required value="<?= @$fetchproduct['height'] ?>">
+                  </div>
+                </div>
 
                 <div class="form-group row">
                   <div class="col-md-2 mb-3">
@@ -174,6 +212,7 @@ $btn_name = isset($_REQUEST['edit_product_id']) ? "Update" : "Add";
                 <thead>
                   <tr>
                     <th>#</th>
+                    <th>Image</th>
                     <th>Barcode</th>
                     <th>Name</th>
                     <th>Name Urdu</th>
@@ -198,6 +237,7 @@ $btn_name = isset($_REQUEST['edit_product_id']) ? "Update" : "Add";
                     <tr>
                       <td><?= $c ?></td>
                       <td><?= $r['product_code'] ?></td>
+                      <td><img src="./img/uploads/<?= $r['product_image'] ?>" width="100" height="100" alt=""></td>
                       <td><?= $r['product_name'] ?></td>
                       <td><?= $r['product_name_urdu'] ?></td>
                       <td><?= $brandFetched['brand_name'] ?>/<?= $categoryFetched['categories_name'] ?></td>
