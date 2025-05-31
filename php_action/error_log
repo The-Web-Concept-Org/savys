@@ -1,0 +1,92 @@
+[06-Sep-2021 11:18:15 Asia/Karachi] PHP Warning:  mysqli_fetch_assoc() expects parameter 1 to be mysqli_result, boolean given in /home/samziymw/public_html/thewebconcept/technolangs/pollybad/includes/functions.php on line 287
+[06-Sep-2021 11:18:20 Asia/Karachi] PHP Warning:  mysqli_fetch_assoc() expects parameter 1 to be mysqli_result, boolean given in /home/samziymw/public_html/thewebconcept/technolangs/pollybad/includes/functions.php on line 287
+[17-Dec-2022 15:45:48 Asia/Karachi] PHP Notice:  Undefined index: credit_type in /home/samziymw/public_html/thewebconcept/client_online/butttraders/php_action/custom_action.php on line 498
+[17-Dec-2022 15:45:57 Asia/Karachi] PHP Notice:  Undefined index: credit_type in /home/samziymw/public_html/thewebconcept/client_online/butttraders/php_action/custom_action.php on line 498
+[17-Dec-2022 15:55:39 Asia/Karachi] PHP Warning:  mysqli_num_rows() expects parameter 1 to be mysqli_result, boolean given in /home/samziymw/public_html/thewebconcept/client_online/butttraders/php_action/custom_action.php on line 458
+[17-Dec-2022 15:55:39 Asia/Karachi] PHP Warning:  mysqli_fetch_assoc() expects parameter 1 to be mysqli_result, boolean given in /home/samziymw/public_html/thewebconcept/client_online/butttraders/includes/functions.php on line 287
+[17-Dec-2022 15:55:40 Asia/Karachi] PHP Warning:  mysqli_num_rows() expects parameter 1 to be mysqli_result, boolean given in /home/samziymw/public_html/thewebconcept/client_online/butttraders/php_action/custom_action.php on line 458
+[17-Dec-2022 15:55:40 Asia/Karachi] PHP Warning:  mysqli_fetch_assoc() expects parameter 1 to be mysqli_result, boolean given in /home/samziymw/public_html/thewebconcept/client_online/butttraders/includes/functions.php on line 287
+[17-Dec-2022 15:55:41 Asia/Karachi] PHP Warning:  mysqli_fetch_assoc() expects parameter 1 to be mysqli_result, boolean given in /home/samziymw/public_html/thewebconcept/client_online/butttraders/includes/functions.php on line 287
+[17-Dec-2022 15:55:41 Asia/Karachi] PHP Warning:  mysqli_num_rows() expects parameter 1 to be mysqli_result, boolean given in /home/samziymw/public_html/thewebconcept/client_online/butttraders/php_action/custom_action.php on line 458
+[17-Dec-2022 19:38:28 Asia/Karachi] PHP Warning:  mysqli_num_rows() expects parameter 1 to be mysqli_result, boolean given in /home/samziymw/public_html/thewebconcept/client_online/butttraders/php_action/custom_action.php on line 458
+[17-Dec-2022 19:38:29 Asia/Karachi] PHP Warning:  mysqli_fetch_assoc() expects parameter 1 to be mysqli_result, boolean given in /home/samziymw/public_html/thewebconcept/client_online/butttraders/includes/functions.php on line 287
+[17-Dec-2022 19:38:29 Asia/Karachi] PHP Warning:  mysqli_num_rows() expects parameter 1 to be mysqli_result, boolean given in /home/samziymw/public_html/thewebconcept/client_online/butttraders/php_action/custom_action.php on line 458
+[17-Dec-2022 19:38:29 Asia/Karachi] PHP Warning:  mysqli_fetch_assoc() expects parameter 1 to be mysqli_result, boolean given in /home/samziymw/public_html/thewebconcept/client_online/butttraders/includes/functions.php on line 287
+[17-Dec-2022 19:38:30 Asia/Karachi] PHP Warning:  mysqli_num_rows() expects parameter 1 to be mysqli_result, boolean given in /home/samziymw/public_html/thewebconcept/client_online/butttraders/php_action/custom_action.php on line 458
+[17-Dec-2022 19:38:30 Asia/Karachi] PHP Warning:  mysqli_fetch_assoc() expects parameter 1 to be mysqli_result, boolean given in /home/samziymw/public_html/thewebconcept/client_online/butttraders/includes/functions.php on line 287
+[17-Dec-2022 20:08:17 Asia/Karachi] PHP Notice:  Undefined index: payment_type in /home/samziymw/public_html/thewebconcept/client_online/butttraders/php_action/custom_action.php on line 509
+[17-Dec-2022 20:08:17 Asia/Karachi] PHP Notice:  Undefined index: payment_type in /home/samziymw/public_html/thewebconcept/client_online/butttraders/php_action/custom_action.php on line 509
+[17-Dec-2022 20:08:17 Asia/Karachi] PHP Notice:  Undefined index: payment_type in /home/samziymw/public_html/thewebconcept/client_online/butttraders/php_action/custom_action.php on line 509
+[17-Dec-2022 20:08:17 Asia/Karachi] PHP Notice:  Undefined index: payment_type in /home/samziymw/public_html/thewebconcept/client_online/butttraders/php_action/custom_action.php on line 509
+[17-Dec-2022 20:08:19 Asia/Karachi] PHP Notice:  Undefined index: payment_type in /home/samziymw/public_html/thewebconcept/client_online/butttraders/php_action/custom_action.php on line 509
+[17-Dec-2022 20:08:19 Asia/Karachi] PHP Notice:  Undefined index: payment_type in /home/samziymw/public_html/thewebconcept/client_online/butttraders/php_action/custom_action.php on line 509
+[17-Dec-2022 20:08:19 Asia/Karachi] PHP Notice:  Undefined index: payment_type in /home/samziymw/public_html/thewebconcept/client_online/butttraders/php_action/custom_action.php on line 509
+[17-Dec-2022 20:08:19 Asia/Karachi] PHP Notice:  Undefined index: payment_type in /home/samziymw/public_html/thewebconcept/client_online/butttraders/php_action/custom_action.php on line 509
+[17-Dec-2022 20:08:19 Asia/Karachi] PHP Notice:  Undefined index: payment_type in /home/samziymw/public_html/thewebconcept/client_online/butttraders/php_action/custom_action.php on line 509
+[17-Dec-2022 20:08:19 Asia/Karachi] PHP Notice:  Undefined index: payment_type in /home/samziymw/public_html/thewebconcept/client_online/butttraders/php_action/custom_action.php on line 509
+[17-Dec-2022 20:08:22 Asia/Karachi] PHP Notice:  Undefined index: payment_type in /home/samziymw/public_html/thewebconcept/client_online/butttraders/php_action/custom_action.php on line 509
+[17-Dec-2022 20:08:22 Asia/Karachi] PHP Notice:  Undefined index: payment_type in /home/samziymw/public_html/thewebconcept/client_online/butttraders/php_action/custom_action.php on line 509
+[17-Dec-2022 20:08:23 Asia/Karachi] PHP Notice:  Undefined index: payment_type in /home/samziymw/public_html/thewebconcept/client_online/butttraders/php_action/custom_action.php on line 509
+[17-Dec-2022 20:08:23 Asia/Karachi] PHP Notice:  Undefined index: payment_type in /home/samziymw/public_html/thewebconcept/client_online/butttraders/php_action/custom_action.php on line 509
+[17-Dec-2022 20:08:23 Asia/Karachi] PHP Notice:  Undefined index: payment_type in /home/samziymw/public_html/thewebconcept/client_online/butttraders/php_action/custom_action.php on line 509
+[17-Dec-2022 20:08:23 Asia/Karachi] PHP Notice:  Undefined index: payment_type in /home/samziymw/public_html/thewebconcept/client_online/butttraders/php_action/custom_action.php on line 509
+[17-Dec-2022 20:08:24 Asia/Karachi] PHP Notice:  Undefined index: payment_type in /home/samziymw/public_html/thewebconcept/client_online/butttraders/php_action/custom_action.php on line 509
+[17-Dec-2022 20:08:24 Asia/Karachi] PHP Notice:  Undefined index: payment_type in /home/samziymw/public_html/thewebconcept/client_online/butttraders/php_action/custom_action.php on line 509
+[17-Dec-2022 20:08:38 Asia/Karachi] PHP Notice:  Undefined index: payment_type in /home/samziymw/public_html/thewebconcept/client_online/butttraders/php_action/custom_action.php on line 509
+[17-Dec-2022 20:08:38 Asia/Karachi] PHP Notice:  Undefined index: payment_type in /home/samziymw/public_html/thewebconcept/client_online/butttraders/php_action/custom_action.php on line 509
+[17-Dec-2022 20:08:38 Asia/Karachi] PHP Notice:  Undefined index: payment_type in /home/samziymw/public_html/thewebconcept/client_online/butttraders/php_action/custom_action.php on line 509
+[17-Dec-2022 20:08:38 Asia/Karachi] PHP Notice:  Undefined index: payment_type in /home/samziymw/public_html/thewebconcept/client_online/butttraders/php_action/custom_action.php on line 509
+[17-Dec-2022 20:08:38 Asia/Karachi] PHP Notice:  Undefined index: payment_type in /home/samziymw/public_html/thewebconcept/client_online/butttraders/php_action/custom_action.php on line 509
+[17-Dec-2022 20:08:38 Asia/Karachi] PHP Notice:  Undefined index: payment_type in /home/samziymw/public_html/thewebconcept/client_online/butttraders/php_action/custom_action.php on line 509
+[17-Dec-2022 20:08:38 Asia/Karachi] PHP Notice:  Undefined index: payment_type in /home/samziymw/public_html/thewebconcept/client_online/butttraders/php_action/custom_action.php on line 509
+[17-Dec-2022 20:08:38 Asia/Karachi] PHP Notice:  Undefined index: payment_type in /home/samziymw/public_html/thewebconcept/client_online/butttraders/php_action/custom_action.php on line 509
+[17-Dec-2022 20:16:30 Asia/Karachi] PHP Notice:  Undefined index: production_id in /home/samziymw/public_html/thewebconcept/client_online/butttraders/php_action/custom_action.php on line 18
+[17-Dec-2022 20:17:22 Asia/Karachi] PHP Notice:  Undefined index: production_id in /home/samziymw/public_html/thewebconcept/client_online/butttraders/php_action/custom_action.php on line 18
+[17-Dec-2022 20:17:59 Asia/Karachi] PHP Notice:  Undefined index: production_id in /home/samziymw/public_html/thewebconcept/client_online/butttraders/php_action/custom_action.php on line 18
+[29-Dec-2022 10:38:42 Asia/Karachi] PHP Notice:  Undefined index: payment_type in /home/samziymw/public_html/thewebconcept/client_online/butttraders/php_action/custom_action.php on line 548
+[29-Dec-2022 10:38:42 Asia/Karachi] PHP Notice:  Undefined index: payment_type in /home/samziymw/public_html/thewebconcept/client_online/butttraders/php_action/custom_action.php on line 548
+[29-Dec-2022 10:38:42 Asia/Karachi] PHP Notice:  Undefined index: payment_type in /home/samziymw/public_html/thewebconcept/client_online/butttraders/php_action/custom_action.php on line 548
+[29-Dec-2022 10:38:42 Asia/Karachi] PHP Notice:  Undefined index: payment_type in /home/samziymw/public_html/thewebconcept/client_online/butttraders/php_action/custom_action.php on line 548
+[29-Dec-2022 10:38:47 Asia/Karachi] PHP Notice:  Undefined index: payment_type in /home/samziymw/public_html/thewebconcept/client_online/butttraders/php_action/custom_action.php on line 548
+[29-Dec-2022 10:38:47 Asia/Karachi] PHP Notice:  Undefined index: payment_type in /home/samziymw/public_html/thewebconcept/client_online/butttraders/php_action/custom_action.php on line 548
+[29-Dec-2022 10:38:48 Asia/Karachi] PHP Notice:  Undefined index: payment_type in /home/samziymw/public_html/thewebconcept/client_online/butttraders/php_action/custom_action.php on line 548
+[29-Dec-2022 10:38:48 Asia/Karachi] PHP Notice:  Undefined index: payment_type in /home/samziymw/public_html/thewebconcept/client_online/butttraders/php_action/custom_action.php on line 548
+[29-Dec-2022 10:38:48 Asia/Karachi] PHP Notice:  Undefined index: payment_type in /home/samziymw/public_html/thewebconcept/client_online/butttraders/php_action/custom_action.php on line 548
+[29-Dec-2022 10:38:48 Asia/Karachi] PHP Notice:  Undefined index: payment_type in /home/samziymw/public_html/thewebconcept/client_online/butttraders/php_action/custom_action.php on line 548
+[29-Dec-2022 10:39:25 Asia/Karachi] PHP Notice:  Undefined index: payment_type in /home/samziymw/public_html/thewebconcept/client_online/butttraders/php_action/custom_action.php on line 548
+[29-Dec-2022 10:39:25 Asia/Karachi] PHP Notice:  Undefined index: payment_type in /home/samziymw/public_html/thewebconcept/client_online/butttraders/php_action/custom_action.php on line 548
+[29-Dec-2022 10:40:38 Asia/Karachi] PHP Notice:  Undefined index: payment_type in /home/samziymw/public_html/thewebconcept/client_online/butttraders/php_action/custom_action.php on line 548
+[29-Dec-2022 10:40:38 Asia/Karachi] PHP Notice:  Undefined index: payment_type in /home/samziymw/public_html/thewebconcept/client_online/butttraders/php_action/custom_action.php on line 548
+[29-Dec-2022 10:40:38 Asia/Karachi] PHP Notice:  Undefined index: payment_type in /home/samziymw/public_html/thewebconcept/client_online/butttraders/php_action/custom_action.php on line 548
+[29-Dec-2022 10:40:38 Asia/Karachi] PHP Notice:  Undefined index: payment_type in /home/samziymw/public_html/thewebconcept/client_online/butttraders/php_action/custom_action.php on line 548
+[29-Dec-2022 10:43:04 Asia/Karachi] PHP Notice:  Undefined index: payment_type in /home/samziymw/public_html/thewebconcept/client_online/butttraders/php_action/custom_action.php on line 548
+[29-Dec-2022 10:43:04 Asia/Karachi] PHP Notice:  Undefined index: payment_type in /home/samziymw/public_html/thewebconcept/client_online/butttraders/php_action/custom_action.php on line 548
+[29-Dec-2022 10:43:14 Asia/Karachi] PHP Notice:  Undefined index: payment_type in /home/samziymw/public_html/thewebconcept/client_online/butttraders/php_action/custom_action.php on line 548
+[29-Dec-2022 10:43:14 Asia/Karachi] PHP Notice:  Undefined index: payment_type in /home/samziymw/public_html/thewebconcept/client_online/butttraders/php_action/custom_action.php on line 548
+[29-Dec-2022 10:44:20 Asia/Karachi] PHP Notice:  Undefined index: production_id in /home/samziymw/public_html/thewebconcept/client_online/butttraders/php_action/custom_action.php on line 18
+[03-Jan-2023 14:25:53 Asia/Karachi] PHP Notice:  Undefined index: payment_type in /home/samziymw/public_html/thewebconcept/client_online/butttraders/php_action/custom_action.php on line 562
+[03-Jan-2023 14:25:53 Asia/Karachi] PHP Notice:  Undefined index: payment_type in /home/samziymw/public_html/thewebconcept/client_online/butttraders/php_action/custom_action.php on line 562
+[03-Jan-2023 14:26:00 Asia/Karachi] PHP Notice:  Undefined index: payment_type in /home/samziymw/public_html/thewebconcept/client_online/butttraders/php_action/custom_action.php on line 562
+[03-Jan-2023 14:26:00 Asia/Karachi] PHP Notice:  Undefined index: payment_type in /home/samziymw/public_html/thewebconcept/client_online/butttraders/php_action/custom_action.php on line 562
+[03-Jan-2023 14:26:10 Asia/Karachi] PHP Notice:  Undefined index: production_id in /home/samziymw/public_html/thewebconcept/client_online/butttraders/php_action/custom_action.php on line 18
+[03-Jan-2023 15:06:02 Asia/Karachi] PHP Notice:  Undefined variable: msg in /home/samziymw/public_html/thewebconcept/client_online/butttraders/php_action/ajax_deleteData.php on line 112
+[03-Jan-2023 15:06:02 Asia/Karachi] PHP Notice:  Undefined variable: sts in /home/samziymw/public_html/thewebconcept/client_online/butttraders/php_action/ajax_deleteData.php on line 112
+[03-Jan-2023 15:10:05 Asia/Karachi] PHP Notice:  Undefined variable: msg in /home/samziymw/public_html/thewebconcept/client_online/butttraders/php_action/ajax_deleteData.php on line 112
+[03-Jan-2023 15:10:05 Asia/Karachi] PHP Notice:  Undefined variable: sts in /home/samziymw/public_html/thewebconcept/client_online/butttraders/php_action/ajax_deleteData.php on line 112
+[03-Jan-2023 15:42:44 Asia/Karachi] PHP Notice:  Undefined variable: msg in /home/samziymw/public_html/thewebconcept/client_online/butttraders/php_action/ajax_deleteData.php on line 112
+[03-Jan-2023 15:42:44 Asia/Karachi] PHP Notice:  Undefined variable: sts in /home/samziymw/public_html/thewebconcept/client_online/butttraders/php_action/ajax_deleteData.php on line 112
+[03-Jan-2023 16:00:01 Asia/Karachi] PHP Fatal error:  Uncaught Error: Cannot use object of type mysqli_result as array in /home/samziymw/public_html/thewebconcept/client_online/butttraders/php_action/ajax_deleteData.php:105
+Stack trace:
+#0 {main}
+  thrown in /home/samziymw/public_html/thewebconcept/client_online/butttraders/php_action/ajax_deleteData.php on line 105
+[03-Jan-2023 16:01:03 Asia/Karachi] PHP Fatal error:  Uncaught Error: Cannot use object of type mysqli_result as array in /home/samziymw/public_html/thewebconcept/client_online/butttraders/php_action/ajax_deleteData.php:105
+Stack trace:
+#0 {main}
+  thrown in /home/samziymw/public_html/thewebconcept/client_online/butttraders/php_action/ajax_deleteData.php on line 105
+[03-Jan-2023 16:03:47 Asia/Karachi] PHP Notice:  Undefined variable: msg in /home/samziymw/public_html/thewebconcept/client_online/butttraders/php_action/ajax_deleteData.php on line 119
+[03-Jan-2023 16:03:47 Asia/Karachi] PHP Notice:  Undefined variable: sts in /home/samziymw/public_html/thewebconcept/client_online/butttraders/php_action/ajax_deleteData.php on line 119
+[04-Jan-2023 16:22:13 Asia/Karachi] PHP Warning:  mysqli_fetch_assoc() expects parameter 1 to be mysqli_result, boolean given in /home/samziymw/public_html/thewebconcept/client_online/butttraders/php_action/custom_action.php on line 1029
+[10-Jan-2023 11:18:06 Asia/Karachi] PHP Notice:  Undefined index: payment_type in /home/samziymw/public_html/thewebconcept/client_online/butttraders/php_action/custom_action.php on line 562
+[10-Jan-2023 11:18:06 Asia/Karachi] PHP Notice:  Undefined index: payment_type in /home/samziymw/public_html/thewebconcept/client_online/butttraders/php_action/custom_action.php on line 562
+[10-Jan-2023 11:33:28 Asia/Karachi] PHP Notice:  Undefined index: credit_type in /home/samziymw/public_html/thewebconcept/client_online/butttraders/php_action/custom_action.php on line 557
+[10-Jan-2023 11:57:08 Asia/Karachi] PHP Notice:  Undefined index: credit_type in /home/samziymw/public_html/thewebconcept/client_online/butttraders/php_action/custom_action.php on line 557
