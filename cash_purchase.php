@@ -25,6 +25,24 @@ if (!empty($_REQUEST['edit_purchase_id'])) {
           <form action="php_action/custom_action.php" method="POST" id="sale_order_fm">
             <input type="hidden" name="product_purchase_id" value="<?= @empty($_REQUEST['edit_purchase_id']) ? "" : base64_decode($_REQUEST['edit_purchase_id']) ?>">
             <input type="hidden" name="payment_type" id="payment_type" value="cash_purchase">
+            <div class="row d-flex justify-content-end">
+              <div class="col-12 col-sm-6 col-md-3 mb-2">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <label for="get_warehouse_name" class="mb-0">Warehouse</label>
+                </div>
+                <input type="hidden" id="add_pro_type" value="add">
+                <select class="form-control searchableSelect"
+                  id="get_warehouse_name"
+                  name="warehouse_id">
+                  <option value="">Select Warehouse</option>
+                  <!-- Example options - Replace with dynamic data using JavaScript or backend -->
+                  <option data-location="Tokyo" value="1">Tokyo Warehouse</option>
+                  <option data-location="Osaka" value="2">Osaka Warehouse</option>
+                  <option data-location="Yokohama" value="3">Yokohama Warehouse</option>
+                </select>
+              </div>
+            </div>
+
             <div class="row form-group">
               <!-- Purchase ID -->
               <div class="col-md-2">
