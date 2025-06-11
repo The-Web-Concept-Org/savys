@@ -1040,6 +1040,7 @@ if (isset($_REQUEST['cash_purchase_supplier'])) {
 					$total_ammount += (float)$total;
 					$product_id = $_REQUEST['product_ids'][$x];
 					$rack_id = $_REQUEST['get_rack_id'][$x];
+					$rack_number = $_REQUEST['get_rack_number'][$x];
 					// print_r($product_rates);
 					// exit;
 					$order_items = [
@@ -1051,6 +1052,7 @@ if (isset($_REQUEST['cash_purchase_supplier'])) {
 						'purchase_item_status' => 1,
 						'warehouse_id' => @$_REQUEST['warehouse_id'],
 						'rack_id' => @$rack_id,
+						'rack_number' => @$rack_number,
 					];
 
 					insert_data($dbc, 'purchase_item', $order_items);

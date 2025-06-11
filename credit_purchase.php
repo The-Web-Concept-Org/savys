@@ -167,6 +167,7 @@ if (!empty($_REQUEST['edit_purchase_id'])) {
                   <thead class="table-bordered">
                     <tr>
                       <th>Code</th>
+                      <th>Rack Barcode</th>
                       <th>Product Name</th>
                       <th>Unit Price</th>
                       <th>Quantity</th>

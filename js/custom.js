@@ -694,8 +694,10 @@ $("#addProductPurchase").on("click", function () {
                 <input type="hidden" id="product_rate_${id}" name="product_rates[]" value="${price}">
                 <input type="hidden" id="product_totalrate_${id}" name="product_totalrates[]" value="${total_price}">
                 <input type="hidden" id="get_sale_price${id}" name="get_sale_price[]" value="${current_rate}">
-                <input type="hidden" id="get_rack_id${rack_id}" name="get_rack_id[]" value="${rack_id}">
+                <input type="hidden" id="get_rack_id${id}" name="get_rack_id[]" value="${rack_id}">
+                <input type="hidden" id="get_rack_number${id}" name="get_rack_number[]" value="${code}-${id}-${rack_id}">
                 <td>${code}</td>
+               <td>${code}-${id}-${rack_id}</td>
                 <td>${name}</td>
                 <td>${price}</td>
                 <td>${Currentquantity}</td>
@@ -722,9 +724,11 @@ $("#addProductPurchase").on("click", function () {
           <input type="hidden" id="product_rate_${id}" name="product_rates[]" value="${price}">
           <input type="hidden" id="product_totalrate_${id}" name="product_totalrates[]" value="${total_price}">
           <input type="hidden" id="get_sale_price${id}" name="get_sale_price[]" value="${current_rate}">
-          <input type="hidden" id="get_rack_id${rack_id}" name="get_rack_id[]" value="${rack_id}">
+          <input type="hidden" id="get_rack_id${id}" name="get_rack_id[]" value="${rack_id}">
+          <input type="hidden" id="get_rack_number${id}" name="get_rack_number[]" value="${code}-${id}-${rack_id}">
           <td>${code}</td>
-          <td>${name}</td>F
+          <td>${code}-${id}-${rack_id}</td>
+          <td>${name}</td>
           <td>${price}</td>
           <td>${product_quantity}</td>
           <td>${total_price}</td>
