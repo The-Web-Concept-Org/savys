@@ -9,7 +9,9 @@ $(document).ready(function () {
       [10, 20, 50, -1],
       [10, 20, 50, "All"],
     ],
-    order: [[0, "desc"]],
+    order: [
+      [0, "desc"]
+    ],
   });
   $(".credit_order").DataTable({
     autoWidth: true,
@@ -17,7 +19,9 @@ $(document).ready(function () {
       [10, 20, 50, -1],
       [10, 20, 50, "All"],
     ],
-    order: [[6, "asc"]],
+    order: [
+      [6, "asc"]
+    ],
   });
   $(".searchableSelect").select2({
     theme: "bootstrap4",
@@ -42,7 +46,10 @@ $(document).ready(function () {
       $.ajax({
         url: "php_action/panel.php",
         method: "POST",
-        data: { sortable_img: "sortable_img", post_order_ids: post_order_ids },
+        data: {
+          sortable_img: "sortable_img",
+          post_order_ids: post_order_ids
+        },
         success: function (data) {},
       });
     },
@@ -58,17 +65,22 @@ function deleteData(table, fld, id, url) {
 
       type: "post",
 
-      data: { table: table, fld: fld, delete_id: id, url: url },
+      data: {
+        table: table,
+        fld: fld,
+        delete_id: id,
+        url: url
+      },
 
       dataType: "json",
 
       success: function (response) {
         $(".response").html(
           '<div class="alert alert-' +
-            response.sts +
-            ' text-center">' +
-            response.msg +
-            "</div>"
+          response.sts +
+          ' text-center">' +
+          response.msg +
+          "</div>"
         );
 
         setTimeout(function () {
@@ -126,9 +138,11 @@ function sweeetalert(text, status, time) {
     timer: time,
   });
 }
+
 function sameValue(id, id2) {
   $("" + id2).val(id);
 }
+
 function resetForm(id) {
   document.getElementById(id).reset();
 }
@@ -147,7 +161,11 @@ function deleteAlert(id, table, row, reload_type) {
       $.ajax({
         url: "php_action/ajax_deleteData.php",
         type: "post",
-        data: { delete_bymanually: id, table: table, row: row },
+        data: {
+          delete_bymanually: id,
+          table: table,
+          row: row
+        },
         dataType: "json",
         success: function (response) {
           //console.log(response);
@@ -168,6 +186,7 @@ function deleteAlert(id, table, row, reload_type) {
     }
   });
 }
+
 function reload_page() {
   location.reload();
 }
