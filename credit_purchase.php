@@ -97,13 +97,22 @@ if (!empty($_REQUEST['edit_purchase_id'])) {
               </div>
             </div> <!-- end of form-group -->
             <div class="form-group row">
-              <div class="col-4 col-md-2">
-                <label>Product Barcode</label>
-                <input type="text" placeholder="Scan by Barcode" name="product_code" autocomplete="off" id="get_product_code" class="form-control">
+              <div class="col-12 col-sm-6 col-md-2 mb-2">
+                <label for="get_product_code">Product Barcode</label>
+                <input type="text"
+                  placeholder="Scan or enter barcode"
+                  name="product_code"
+                  autocomplete="off"
+                  id="get_product_code"
+                  class="form-control">
               </div>
               <div class="col-2 col-md-2">
-                <label>Rack</label>
-                <select class="form-control searchableSelect" required name="rack_id" id="rack_id">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <label for="get_product_name" class="mb-0 ">Rack</label>
+                  <span id="capacity" class="badge badge-info font-weight-bold px-3 py-1" style="font-size: 0.9rem;">Capacity: 0</span>
+                </div>
+                <!-- <label>Rack</label> -->
+                <select class="form-control searchableSelect" onchange="getRackCapacity(this.value)" required name="rack_id" id="rack_id">
                   <option selected disabled>Select Rack</option>
                   <?php
                   if (isset($_SESSION['warehouse_id'])) {
@@ -118,25 +127,32 @@ if (!empty($_REQUEST['edit_purchase_id'])) {
                     </option>
                   <?php } ?>
                 </select>
+
               </div>
-              <div class="col-6 col-md-3">
-                <label>Products</label>
+              <div class="col-12 col-sm-6 col-md-3 ">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <label for="get_product_name" class="mb-0 ">Products</label>
+                  <span id="instockQty" class="badge badge-info font-weight-bold px-3 py-1" style="font-size: 0.9rem;">In Stock: 0</span>
+                </div>
                 <input type="hidden" id="add_pro_type" value="add">
-                <select class="form-control searchableSelect" id="get_product_name" name="product_id">
+                <select class="form-control searchableSelect"
+                  id="get_product_name"
+                  name="product_id">
                   <option value="">Select Product</option>
                   <?php
-                  $result = mysqli_query($dbc, "SELECT * FROM product WHERE status=1 ");
+                  $result = mysqli_query($dbc, "SELECT * FROM product WHERE status=1 ORDER BY product_name ASC");
                   while ($row = mysqli_fetch_array($result)) {
                     $getBrand = fetchRecord($dbc, "brands", "brand_id", $row['brand_id']);
                     $getCat = fetchRecord($dbc, "categories", "categories_id", $row['category_id']);
                   ?>
-
-                    <option data-price="<?= $row["current_rate"] ?>" <?= empty($r['product_id']) ? "" : "selected" ?> value="<?= $row["product_id"] ?>">
-                      <?= $row["product_name"] ?> | <?= @$getBrand["brand_name"] ?>(<?= @$getCat["categories_name"] ?>) </option>
-
-                  <?php   } ?>
+                    <option
+                      data-price="<?= $row["current_rate"] ?>"
+                      data-code="<?= $row["product_code"] ?>"
+                      value="<?= $row["product_id"] ?>">
+                      <?= ucwords($row["product_name"]) ?> | <?= ucwords(@$getBrand["brand_name"]) ?> (<?= ucwords(@$getCat["categories_name"]) ?>)
+                    </option>
+                  <?php } ?>
                 </select>
-                <span class="text-center w-100" id="instockQty"></span>
               </div>
               <div class="d-none col-1 col-md-1">
                 <label class="invisible d-block">.</label>
@@ -166,13 +182,13 @@ if (!empty($_REQUEST['edit_purchase_id'])) {
                 <table class="table  saleTable" id="myDiv">
                   <thead class="table-bordered">
                     <tr>
-                      <th>Code</th>
-                      <th>Rack Barcode</th>
-                      <th>Product Name</th>
-                      <th>Unit Price</th>
-                      <th>Quantity</th>
-                      <th>Total Price</th>
-                      <th>Action</th>
+                      <th><strong>Code</strong></th>
+                      <th><strong>Rack Barcode</strong></th>
+                      <th><strong>Product Name</strong></th>
+                      <th><strong>Unit Price</strong></th>
+                      <th><strong>Quantity</strong></th>
+                      <th><strong>Total Price</strong></th>
+                      <th><strong>Action</strong></th>
                     </tr>
                   </thead>
                   <tbody class="table table-bordered" id="purchase_product_tb">
@@ -210,19 +226,19 @@ if (!empty($_REQUEST['edit_purchase_id'])) {
 
                   <tfoot>
                     <tr>
-                      <td colspan="2"></td>
+                      <td colspan="3"></td>
 
-                      <td class="table-bordered"> Sub Total :</td>
+                      <td class="table-bordered"> <strong>Sub Total :</strong></td>
                       <td class="table-bordered" id="product_total_amount"><?= @$fetchPurchase['total_amount'] ?></td>
-                      <td class="table-bordered"> Discount :</td>
+                      <td class="table-bordered"> <strong>Discount :</strong></td>
                       <td class="table-bordered" id="getDiscount"><input onkeyup="getOrderTotal()" type="number" id="ordered_discount" class="form-control form-control-sm" value="<?= @empty($_REQUEST['edit_order_id']) ? "0" : $fetchPurchase['discount'] ?>" min="0" max="100" name="ordered_discount">
                       </td>
                     </tr>
                     <tr>
-                      <td colspan="2" class="border-none"></td>
+                      <td colspan="3" class="border-none"></td>
                       <td class="table-bordered"> <strong>Grand Total :</strong> </td>
                       <td class="table-bordered" id="product_grand_total_amount"><?= @$fetchPurchase['grand_total'] ?></td>
-                      <td class="table-bordered">Paid :</td>
+                      <td class="table-bordered"><strong>Paid :</strong></td>
                       <td class="table-bordered">
                         <div class="form-group row">
                           <div class="col-sm-6">
@@ -233,18 +249,18 @@ if (!empty($_REQUEST['edit_purchase_id'])) {
                           <div class="col-sm-6">
                             <div class="custom-control custom-switch">
                               <input type="checkbox" class="custom-control-input" id="full_payment_check">
-                              <label class="custom-control-label" for="full_payment_check">Full Payment</label>
+                              <label class="custom-control-label" for="full_payment_check"><strong>Full Payment</strong></label>
                             </div>
                           </div>
                         </div>
                       </td>
                     </tr>
                     <tr>
-                      <td colspan="2" class="border-none"></td>
-                      <td class="table-bordered">Remaing Amount :</td>
+                      <td colspan="3" class="border-none"></td>
+                      <td class="table-bordered"><strong>Remaing Amount :</strong></td>
                       <td class="table-bordered"><input type="number" class="form-control form-control-sm" id="remaining_ammount" required readonly name="remaining_ammount" value="<?= @$fetchPurchase['due'] ?>">
                       </td>
-                      <td class="table-bordered">Account :</td>
+                      <td class="table-bordered"><strong>Account :</strong></td>
                       <td class="table-bordered">
 
                         <div class="input-group">
@@ -286,10 +302,26 @@ if (!empty($_REQUEST['edit_purchase_id'])) {
 <?php include_once 'includes/foot.php'; ?>
 
 <script>
+  $('#get_product_quantity').on('keydown', function(e) {
+    let currentVal = parseInt($(this).val()) || 0;
+
+    if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      $(this).val(currentVal + 5);
+    }
+
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      let newVal = currentVal - 5;
+      $(this).val(newVal < 1 ? 1 : newVal); // prevent value from going below 1
+    }
+  });
   if (<?= @empty($_REQUEST['edit_purchase_id']) ? "false" : "true" ?>) {
     setTimeout(function() {
       $('#warehouse_id').val("<?= @$fetchPurchase['warehouse_id'] ?>").change();
       // $('#warehouse_id').attr('disabled', 'disabled');
-    }, 500);
+       }, 500);
   }
+
+
 </script>

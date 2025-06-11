@@ -1162,7 +1162,7 @@ if (isset($_REQUEST['cash_purchase_supplier'])) {
 						$user_id = $_SESSION['user_id'];
 						$inventory = mysqli_query($dbc, "SELECT * FROM inventory WHERE rack_number = '$selected_rack_number' ");
 						if (mysqli_num_rows($inventory) > 0) {
-							
+
 							$inventory = mysqli_fetch_assoc($inventory);
 							$product_quantity = $inventory['quantity_instock'] ?? 0;
 							$inventory_qty = (float)$inventory['quantity_instock'] - (float)$product_quantity;
@@ -1480,4 +1480,27 @@ if (isset($_REQUEST['warehouse_id']) && @$_REQUEST['action'] == 'getRackByWareho
 	} else {
 		echo json_encode(['status' => 'error', 'message' => 'No racks found for this warehouse.']);
 	}
+}
+
+
+
+// Get  Rack Capacity by Rack ID
+
+if (isset($_REQUEST['getRackCapacity'])) {
+	$rack_id = $_REQUEST['getRackCapacity'];
+	$rack = mysqli_fetch_assoc(mysqli_query($dbc, "SELECT * FROM racks WHERE rack_id='$rack_id'"));
+
+	if ($rack) {
+		$response = [
+			'status' => 'success',
+			'capacity' => $rack['capacity'] ?? 0,
+			'rack_name' => $rack['name'] ?? ''
+		];
+	} else {
+		$response = [
+			'status' => 'error',
+			'message' => 'Rack not found or inactive.'
+		];
+	}
+	echo json_encode($response);
 }

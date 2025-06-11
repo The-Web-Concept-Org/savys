@@ -648,7 +648,7 @@ $("#addProductPurchase").on("click", function () {
   var product_quantity = parseFloat($("#get_product_quantity").val());
   var pro_type = $("#add_pro_type").val();
   var max_qty = parseFloat($("#get_product_quantity").attr("max"));
-
+  var capacity = $("#capacity").val();
   // If cash or credit purchase, assign high stock and get current rate
   if (payment_type == "cash_purchase" || payment_type == "credit_purchase") {
     max_qty = getRandomInt(99999999999);
@@ -658,6 +658,10 @@ $("#addProductPurchase").on("click", function () {
   // Validate quantity
   if (product_quantity <= 0 || isNaN(product_quantity)) {
     sweeetalert("Quantity must be greater than 0", "error", 1500);
+    return;
+  }
+  if (product_quantity > capacity) {
+    sweeetalert("Quantity cannot be greater than capacity", "error", 1500);
     return;
   }
 
@@ -1340,6 +1344,7 @@ $(document).ready(function () {
       success: function (data) {
         if (data.status === "success") {
           $("#rack_id").html(data.options);
+          $("#rack_id").change();
         } else {
           $("#rack_id").html('<option value="">No racks found</option>');
         }
@@ -1347,3 +1352,17 @@ $(document).ready(function () {
     });
   });
 });
+
+let getRackCapacity = (rack_id) => {
+  $.ajax({
+    url: "php_action/custom_action.php",
+    type: "POST",
+    data: {
+      getRackCapacity: rack_id,
+    },
+    success: function (response) {
+      response = JSON.parse(response);
+      $("#capacity").text(`Capacity: ${response.capacity}`);
+    },
+  });
+};

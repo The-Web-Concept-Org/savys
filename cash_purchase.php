@@ -134,8 +134,12 @@ if (!empty($_REQUEST['edit_purchase_id'])) {
                   class="form-control">
               </div>
               <div class="col-2 col-md-2 mb-2">
-                <label>Rack</label>
-                <select class="form-control searchableSelect" required name="rack_id" id="rack_id">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <label for="get_product_name" class="mb-0 ">Rack</label>
+                  <span id="capacity" class="badge badge-info font-weight-bold px-3 py-1" style="font-size: 0.9rem;">Capacity: 0</span>
+                </div>
+                <!-- <label>Rack</label> -->
+                <select class="form-control searchableSelect" onchange="getRackCapacity(this.value)" required name="rack_id" id="rack_id">
                   <option selected disabled>Select Rack</option>
                   <?php
                   if (isset($_SESSION['warehouse_id'])) {
@@ -150,6 +154,7 @@ if (!empty($_REQUEST['edit_purchase_id'])) {
                     </option>
                   <?php } ?>
                 </select>
+
               </div>
               <div class="col-12 col-sm-6 col-md-3 mb-2">
                 <div class="d-flex justify-content-between align-items-center mb-2">
@@ -261,7 +266,7 @@ if (!empty($_REQUEST['edit_purchase_id'])) {
                   <tfoot>
                     <!-- Subtotal & Discount -->
                     <tr>
-                      <td colspan="2"></td>
+                      <td colspan="3"></td>
                       <td class="table-bordered align-middle"><strong>Sub Total:</strong></td>
                       <td class="table-bordered align-middle" id="product_total_amount">
                         <?= @$fetchPurchase['total_amount'] ?>
@@ -282,7 +287,7 @@ if (!empty($_REQUEST['edit_purchase_id'])) {
 
                     <!-- Grand Total & Paid -->
                     <tr>
-                      <td colspan="2" class="border-none"></td>
+                      <td colspan="3" class="border-none"></td>
                       <td class="table-bordered align-middle"><strong>Grand Total:</strong></td>
                       <td class="table-bordered align-middle" id="product_grand_total_amount">
                         <?= @$fetchPurchase['grand_total'] ?>
@@ -304,7 +309,7 @@ if (!empty($_REQUEST['edit_purchase_id'])) {
 
                     <!-- Remaining & Account -->
                     <tr>
-                      <td colspan="2" class="border-none"></td>
+                      <td colspan="3" class="border-none"></td>
                       <td class="table-bordered align-middle"><strong>Remaining Amount:</strong></td>
                       <td class="table-bordered">
                         <input
