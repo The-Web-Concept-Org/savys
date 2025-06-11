@@ -39,7 +39,7 @@ if (!empty($_REQUEST['edit_purchase_id'])) {
                   $warehouse = mysqli_query($dbc, "SELECT * FROM warehouse WHERE warehouse_status = 1");
                   while ($row = mysqli_fetch_array($warehouse)) {
                   ?>
-                    <option <?= (@$fetchOrder['warehouse_id'] == $row['warehouse_id']) ? "selected" : "" ?> class="text-capitalize"
+                    <option class="text-capitalize"
                       value="<?= $row['warehouse_id'] ?>">
                       <?= $row['warehouse_name'] ?>
                     </option>
@@ -187,7 +187,11 @@ if (!empty($_REQUEST['edit_purchase_id'])) {
                           <input type="hidden" id="product_quantites_<?= $r['product_id'] ?>" name="product_quantites[]" value="<?= $r['quantity'] ?>">
                           <input type="hidden" id="product_rate_<?= $r['product_id'] ?>" name="product_rates[]" value="<?= $r['rate'] ?>">
                           <input type="hidden" id="product_totalrate_<?= $r['product_id'] ?>" name="product_totalrates[]" value="<?= $r['rate'] ?>">
+                          <input type="hidden" id="get_rack_id<?= $r['product_id'] ?>" name="get_rack_id[]" value="<?= $r['rack_id'] ?>">
+                          <input type="hidden" id="get_rack_number<?= $r['product_id'] ?>" name="get_rack_id[]" value="<?= $r['rack_number'] ?>">
+
                           <td><?= $r['product_code'] ?></td>
+                          <td><?= $r['rack_number'] ?></td>
                           <td><?= $r['product_name'] ?></td>
                           <td><?= $r['rate'] ?></td>
                           <td><?= $r['quantity'] ?></td>
@@ -196,7 +200,7 @@ if (!empty($_REQUEST['edit_purchase_id'])) {
                           <td>
 
                             <button type="button" onclick="removeByid(`#product_idN_<?= $r['product_id'] ?>`)" class="fa fa-trash text-danger" href="#"></button>
-                            <button type="button" onclick="editByid(<?= $r['product_id'] ?>,`<?= $r['product_code'] ?>`,<?= $r['rate'] ?>,<?= $r['quantity'] ?>)" class="fa fa-edit text-success ml-2 "></button>
+                            <button type="button" onclick="editByid(<?= $r['product_id'] ?>,`<?= $r['product_code'] ?>`,<?= $r['rate'] ?>,<?= $r['quantity'] ?> , <?= $r['rack_id'] ?>)" class="fa fa-edit text-success ml-2 "></button>
 
                           </td>
                         </tr>
@@ -281,3 +285,11 @@ if (!empty($_REQUEST['edit_purchase_id'])) {
 </html>
 <?php include_once 'includes/foot.php'; ?>
 
+<script>
+  if (<?= @empty($_REQUEST['edit_purchase_id']) ? "false" : "true" ?>) {
+    setTimeout(function() {
+      $('#warehouse_id').val("<?= @$fetchPurchase['warehouse_id'] ?>").change();
+      $('#warehouse_id').attr('disabled', 'disabled');
+    }, 500);
+  }
+</script>

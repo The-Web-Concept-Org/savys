@@ -33,7 +33,7 @@ if (!empty($_REQUEST['edit_purchase_id'])) {
                   $warehouse = mysqli_query($dbc, "SELECT * FROM warehouse WHERE warehouse_status = 1");
                   while ($row = mysqli_fetch_array($warehouse)) {
                   ?>
-                    <option <?= (@$fetchOrder['warehouse_id'] == $row['warehouse_id']) ? "selected" : "" ?> class="text-capitalize"
+                    <option class="text-capitalize"
                       value="<?= $row['warehouse_id'] ?>">
                       <?= $row['warehouse_name'] ?>
                     </option>
@@ -133,7 +133,7 @@ if (!empty($_REQUEST['edit_purchase_id'])) {
                   id="get_product_code"
                   class="form-control">
               </div>
-              <div class="col-2 col-md-2">
+              <div class="col-2 col-md-2 mb-2">
                 <label>Rack</label>
                 <select class="form-control searchableSelect" required name="rack_id" id="rack_id">
                   <option selected disabled>Select Rack</option>
@@ -183,7 +183,7 @@ if (!empty($_REQUEST['edit_purchase_id'])) {
                   min="0"
                   class="form-control"
                   id="get_product_price"
-                  placeholder="Enter purchase rate">
+                  placeholder="purchase rate">
               </div>
 
               <div class="col-12 col-sm-6 col-md-1 mb-2">
@@ -193,7 +193,7 @@ if (!empty($_REQUEST['edit_purchase_id'])) {
                   <?= ($_SESSION['user_role'] == "admin") ? "" : "readonly" ?>
                   class="form-control"
                   id="get_sale_price"
-                  placeholder="Enter sale rate">
+                  placeholder="sale rate">
               </div>
 
               <div class="col-12 col-sm-6 col-md-2 mb-2">
@@ -240,15 +240,18 @@ if (!empty($_REQUEST['edit_purchase_id'])) {
                           <input type="hidden" id="product_quantites_<?= $r['product_id'] ?>" name="product_quantites[]" value="<?= $r['quantity'] ?>">
                           <input type="hidden" id="product_rate_<?= $r['product_id'] ?>" name="product_rates[]" value="<?= $r['rate'] ?>">
                           <input type="hidden" id="product_totalrate_<?= $r['product_id'] ?>" name="product_totalrates[]" value="<?= $r['rate'] ?>">
+                          <input type="hidden" id="get_rack_id<?= $r['product_id'] ?>" name="get_rack_id[]" value="<?= $r['rack_id'] ?>">
+                          <input type="hidden" id="get_rack_number<?= $r['product_id'] ?>" name="get_rack_id[]" value="<?= $r['rack_number'] ?>">
 
                           <td><?= ucwords($r['product_code']) ?></td>
+                          <td><?= $r['rack_number'] ?></td>
                           <td><?= ucwords($r['product_name']) ?></td>
                           <td><?= $r['rate'] ?></td>
                           <td><?= $r['quantity'] ?></td>
                           <td><?= (float)$r['rate'] * (float)$r['quantity'] ?></td>
                           <td>
                             <button type="button" onclick="removeByid('#product_idN_<?= $r['product_id'] ?>')" class="fa fa-trash text-danger"></button>
-                            <button type="button" onclick="editByid(<?= $r['product_id'] ?>, '<?= ucwords($r['product_code']) ?>', <?= $r['rate'] ?>, <?= $r['quantity'] ?>)" class="fa fa-edit text-success ml-2"></button>
+                            <button type="button" onclick="editByid(<?= $r['product_id'] ?>, '<?= ucwords($r['product_code']) ?>', <?= $r['rate'] ?>, <?= $r['quantity'] ?> , <?= $r['rack_id'] ?>)" class="fa fa-edit text-success ml-2"></button>
                           </td>
                         </tr>
                     <?php }
@@ -379,4 +382,10 @@ if (!empty($_REQUEST['edit_purchase_id'])) {
       $(this).val(newVal < 1 ? 1 : newVal); // prevent value from going below 1
     }
   });
+  if (<?= @empty($_REQUEST['edit_purchase_id']) ? "false" : "true" ?>) {
+    setTimeout(function() {
+      $('#warehouse_id').val("<?= @$fetchPurchase['warehouse_id'] ?>").change();
+      $('#warehouse_id').attr('disabled', 'disabled');
+    }, 500);
+  }
 </script>
