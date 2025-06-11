@@ -1002,9 +1002,22 @@ if (isset($_REQUEST['getProductDetails'])) {
 	echo json_encode($product);
 }
 if (isset($_REQUEST['getProductDetailsBycode'])) {
-	$product = mysqli_fetch_assoc(mysqli_query($dbc, "SELECT  product.*,brands.* FROM product INNER JOIN brands ON product.brand_id=brands.brand_id   WHERE product.product_code='" . $_REQUEST['getProductDetailsBycode'] . "' AND product.status=1  "));
+	$full_code = $_REQUEST['getProductDetailsBycode'];
+
+	$parts = explode('-', $full_code);
+	$product_code = $parts[0];
+
+	$query = "SELECT product.*, brands.* 
+              FROM product 
+              INNER JOIN brands ON product.brand_id = brands.brand_id 
+              WHERE product.product_code = '$product_code' AND product.status = 1";
+
+	$result = mysqli_query($dbc, $query);
+	$product = mysqli_fetch_assoc($result);
+
 	echo json_encode($product);
 }
+
 /*---------------------- cash purchase   -------------------------------------------------------------------*/
 if (isset($_REQUEST['cash_purchase_supplier'])) {
 	if (!empty($_REQUEST['product_ids'])) {

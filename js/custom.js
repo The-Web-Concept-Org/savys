@@ -490,10 +490,14 @@ function getCustomer_name(value) {
 }
 
 function getRemaingAmount() {
-  var paid_ammount = $("#paid_ammount").val();
-  var product_grand_total_amount = $("#product_grand_total_amount").html();
-  var total = parseFloat(product_grand_total_amount) - parseFloat(paid_ammount);
-  $("#remaining_ammount").val(total);
+  var paid_ammount = parseFloat($("#paid_ammount").val()) || 0;
+  var product_grand_total_amount =
+    parseFloat($("#product_grand_total_amount").html()) || 0;
+
+  var total = product_grand_total_amount - paid_ammount;
+
+  // Remove minus sign if total is negative
+  $("#remaining_ammount").val(Math.abs(total).toFixed(2));
 }
 
 function loadProducts(id) {
@@ -542,6 +546,7 @@ $("#get_product_name").on("change", function () {
     success: function (response) {
       $("#instockQty").html("instock :" + response.qty);
       console.log(response.qty);
+      $("#get_product_code").val(response.product_code);
       if (payment_type == "cash_in_hand" || payment_type == "credit_sale") {
         $("#get_product_price").val(response.current_rate);
         $("#get_product_quantity").attr("max", response.qty);
@@ -760,30 +765,43 @@ function removeByid(id) {
 
 function getOrderTotal() {
   var payment_type = $("#payment_type").val();
-  var total_bill = (grand_total = 0);
+  var total_bill = 0;
+  var grand_total = 0;
+  var total_profit = 0;
+
   $(".product_ids").each(function () {
-    var quantity = $(this).data("quantity");
-    var rates = $(this).data("price");
-    //console.log(rates);
-    total_bill += parseFloat(rates) * parseFloat(quantity);
+    var quantity = parseFloat($(this).data("quantity")) || 0;
+    var selling_rate = parseFloat($(this).data("price")) || 0;
+    var purchase_rate = parseFloat($(this).data("purchase")) || 0;
+
+    total_bill += selling_rate * quantity;
+    total_profit += (selling_rate - purchase_rate) * quantity;
   });
-  var discount = $("#ordered_discount").val();
-  var freight = $("#freight").val();
-  discount = discount == "" ? (discount = 0) : parseFloat(discount);
-  if (payment_type == "cash_in_hand" || payment_type == "credit_sale") {
-    freight = freight == "" ? (freight = 0) : parseFloat(freight);
-  } else {
+
+  // alert(total_profit);
+  var discount = parseFloat($("#ordered_discount").val()) || 0;
+  var freight = parseFloat($("#freight").val()) || 0;
+
+  if (!(payment_type == "cash_in_hand" || payment_type == "credit_sale")) {
     freight = 0;
   }
-  //console.log(discount);
-  grand_total = freight + (total_bill - discount);
-  $("#product_total_amount").html(total_bill);
-  $("#product_grand_total_amount").html(grand_total);
+
+  grand_total = total_bill - discount + freight;
+
+  // Prevent NaN display
+  total_bill = isNaN(total_bill) ? 0 : total_bill;
+  grand_total = isNaN(grand_total) ? 0 : grand_total;
+  total_profit = isNaN(total_profit) ? 0 : total_profit;
+
+  $("#product_total_amount").html(total_bill.toFixed(2));
+  $("#product_grand_total_amount").html(grand_total.toFixed(2));
+  $("#total_profit_amount").html(total_profit.toFixed(2)); // 💰 Show profit here
 
   if (payment_type == "cash_in_hand" || payment_type == "cash_purchase") {
-    $("#paid_ammount").val(grand_total);
-    $("#paid_ammount").attr("max", grand_total);
+    $("#paid_ammount").val(grand_total.toFixed(2));
+    // $("#paid_ammount").attr('max', grand_total.toFixed(2));
     $("#paid_ammount").prop("required", true);
+
     if (payment_type == "cash_in_hand") {
       $("#full_payment_check").prop("checked", true);
     }
@@ -791,16 +809,12 @@ function getOrderTotal() {
     $("#paid_ammount").val("0");
     $("#paid_ammount").prop("required", false);
   }
-  if (grand_total > 0) {
-    $("input[name='payment_account'] ").prop("required", true);
-  } else {
-    $("input[name='payment_account'] ").prop("required", false);
-  }
-  $("#get_product_name").val(null).trigger("change");
-  // setTimeout(function(){
-  //       $('#get_product_name').select2('open');
 
-  //     }, 500);
+  if (grand_total > 0) {
+    $("input[name='payment_account']").prop("required", true);
+  } else {
+    $("input[name='payment_account']").prop("required", false);
+  }
 
   getRemaingAmount();
 }
@@ -848,21 +862,36 @@ function getBalance(val, id) {
 // ---------------------------order gui---------------------------------------
 
 // var input = document.getElementById("barcode_product");
-$("#barcode_product").on("keyup", function (event) {
-  console.log("da");
-  var input = document.getElementById("barcode_product");
-  // input.addEventListener("keyup", function(event) {
-  if (event.keyCode === 13) {
-    var value = input.value;
-    event.preventDefault();
-    addbarcode_product(value, "plus");
-    //   console.log(value);
-    input.value = "";
-  }
+$(document).ready(function () {
+  $("#barcode_product").focus();
+  $("#get_product_code").focus();
+
+  $("#barcode_product").on("keydown", function (event) {
+    if (event.key === "Enter" || event.keyCode === 13) {
+      event.preventDefault();
+      let barcode = $(this).val().trim();
+      if (barcode !== "") {
+        // alert("Scanned barcode: " + barcode);
+        addbarcode_product(barcode, "plus");
+        $(this).val(""); // Clear the input
+
+        // Focus back after short delay
+        setTimeout(() => {
+          $("#barcode_product").focus();
+        }, 100);
+      } else {
+        alert("No barcode scanned!");
+        setTimeout(() => {
+          $("#barcode_product").focus();
+        }, 100);
+      }
+    }
+  });
 });
 
 function addbarcode_product(code, action_value) {
-  //$("#ordered_products").append(dbarcode_productata);
+  let new_code = code;
+  let rack_id = new_code.split("-").pop();
 
   $.ajax({
     url: "php_action/custom_action.php",
@@ -872,139 +901,137 @@ function addbarcode_product(code, action_value) {
     },
     dataType: "json",
     success: function (res) {
-      console.log(action_value);
       if (res.quantity_instock > 0) {
         if ($("#product_idN_" + res.product_id).length) {
-          var jsonObj = [];
-          $(".product_ids").each(function (index) {
+          $(".product_ids").each(function () {
             var quantity = $(this).data("quantity");
             var val = $(this).val();
 
             if (val == res.product_id) {
-              //$("#product_idN_"+id).remove();
+              var Currentquantity = parseFloat(quantity);
 
-              if (action_value == "plus") {
-                var Currentquantity = 1 + parseFloat(quantity);
-              }
-              if (action_value == "minus") {
-                var Currentquantity = parseFloat(quantity) - 1;
+              if (action_value === "plus") {
+                Currentquantity += 1;
+              } else if (action_value === "minus") {
+                if (Currentquantity > 1) {
+                  Currentquantity -= 1;
+                } else {
+                  sweeetalert(
+                    "Quantity cannot be less than 1",
+                    "warning",
+                    1500
+                  );
+                  return;
+                }
               }
 
-              $("#product_idN_" + res.product_id).replaceWith(
-                '<tr id="product_idN_' +
-                  res.product_id +
-                  '">\
-          <input type="hidden" data-price="' +
-                  res.current_rate +
-                  '" data-quantity="' +
-                  Currentquantity +
-                  '" id="product_ids_' +
-                  res.product_id +
-                  '" class="product_ids" name="product_ids[]" value="' +
-                  res.product_id +
-                  '">\
-          <input type="hidden" id="product_quantites_' +
-                  res.product_id +
-                  '" name="product_quantites[]" value="' +
-                  Currentquantity +
-                  '">\
-          <input type="hidden" id="product_rates_' +
-                  res.product_id +
-                  '" name="product_rates[]" value="' +
-                  res.current_rate +
-                  '">\
-          <td>' +
-                  res.product_code +
-                  "  </td>\
-          <td>" +
-                  res.product_name +
-                  ' (<span class="text-success">' +
-                  res.brand_name +
-                  "</span>) </td>\
-          <td>" +
-                  res.current_rate +
-                  " </td>\
-          <td>" +
-                  Currentquantity +
-                  " </td>\
-          <td>" +
-                  res.current_rate * Currentquantity +
-                  ' </td>\
-          <td> <button type="button" onclick="addbarcode_product(`' +
-                  res.product_code +
-                  '`,`plus`)" class="fa fa-plus text-success" href="#" ></button>\
-            <button type="button" onclick="addbarcode_product(`' +
-                  res.product_code +
-                  '`,`minus`)" class="fa fa-minus text-warning" href="#" ></button>\
-            <button type="button" onclick="removeByid(`#product_idN_' +
-                  res.product_id +
-                  '`)" class="fa fa-trash text-danger" href="#" ></button>\
-            </td>\
-          </tr>'
-              );
+              if (Currentquantity > parseFloat(res.quantity_instock)) {
+                sweeetalert(
+                  "Only " + res.quantity_instock + " items in stock!",
+                  "error",
+                  2000
+                );
+                return;
+              }
+
+              $("#product_idN_" + res.product_id).replaceWith(`
+                <tr id="product_idN_${res.product_id}">
+                  <input type="hidden"
+                    data-price="${res.current_rate}"
+                    data-purchase="${res.purchase_rate}"
+                    data-quantity="${Currentquantity}"
+                    id="product_ids_${res.product_id}"
+                    class="product_ids"
+                    name="product_ids[]"
+                    value="${res.product_id}">
+                  <input type="hidden" id="product_quantites_${
+                    res.product_id
+                  }" name="product_quantites[]" value="${Currentquantity}">
+                  <input type="hidden" id="product_rates_${
+                    res.product_id
+                  }" name="product_rates[]" value="${res.current_rate}">
+                     <input type="hidden" id="get_rack_number${
+                       res.product_id
+                     }" name="get_rack_number[]" value="${res.product_code}-${
+                res.product_id
+              }-${rack_id}">
+                                   <td>${res.product_code.toUpperCase()}</td>
+                  <td>${res.product_name.toUpperCase()} (<span class="text-success">${res.brand_name.toUpperCase()}</span>)</td>
+                  <td>${res.current_rate}</td>
+                  <td>${Currentquantity}</td>
+                  <td>${(
+                    res.current_rate * Currentquantity -
+                    res.purchase_rate * Currentquantity
+                  ).toFixed(2)}</td>
+                  <td>${(res.current_rate * Currentquantity).toFixed(2)}</td>
+                  <td>
+                    <button type="button" onclick="addbarcode_product('${
+                      res.product_code
+                    }', 'plus')" class="btn btn-sm btn-success" title="Increase quantity">+ Add</button>
+                    <button type="button" onclick="addbarcode_product('${
+                      res.product_code
+                    }', 'minus')" class="btn btn-sm btn-warning" title="Decrease quantity">− Remove</button>
+                    <button type="button" onclick="removeByid('#product_idN_${
+                      res.product_id
+                    }')" class="btn btn-sm btn-danger" title="Remove product">🗑 Delete</button>
+                  </td>
+                </tr>
+              `);
             }
-            getOrderTotal();
           });
+
+          getOrderTotal();
         } else {
-          $("#purchase_product_tb").append(
-            '<tr id="product_idN_' +
-              res.product_id +
-              '">\
-                <input type="hidden" data-price="' +
-              res.current_rate +
-              '"  data-quantity="1" id="product_ids_' +
-              res.product_id +
-              '" class="product_ids" name="product_ids[]" value="' +
-              res.product_id +
-              '">\
-                <input type="hidden" id="product_quantites_' +
-              res.product_id +
-              '" name="product_quantites[]" value="1">\
-                <input type="hidden" id="product_rate_' +
-              res.product_id +
-              '" name="product_rates[]" value="' +
-              res.current_rate +
-              '">\
-                <input type="hidden" id="product_totalrate_' +
-              res.product_id +
-              '" name="product_totalrates[]" value="' +
-              res.current_rate +
-              '">\
-                <td>' +
-              res.product_code +
-              "  </td>\
-                <td>" +
-              res.product_name +
-              ' (<span class="text-success">' +
-              res.brand_name +
-              "</span>)</td>\
-                 <td>" +
-              res.current_rate +
-              "</td>\
-                 <td>1</td>\
-                <td>" +
-              res.current_rate +
-              '</td>\
-                <td>\
-                  <button type="button" onclick="addbarcode_product(`' +
-              res.product_code +
-              '`,`plus`)" class="fa fa-plus text-success" href="#" ></button>\
-            <button type="button" onclick="addbarcode_product(`' +
-              res.product_code +
-              '`,`minus`)" class="fa fa-minus text-warning" href="#" ></button>\
-            <button type="button" onclick="removeByid(`#product_idN_' +
-              res.product_id +
-              '`)" class="fa fa-trash text-danger" href="#" ></button>\
-            </td>\
-                </tr>'
-          );
+          // Append new row if it doesn’t exist
+          $("#purchase_product_tb").append(`
+            <tr id="product_idN_${res.product_id}">
+              <input type="hidden"
+                data-price="${res.current_rate}"
+                data-purchase="${res.purchase_rate}"
+                data-quantity="1"
+                id="product_ids_${res.product_id}"
+                class="product_ids"
+                name="product_ids[]"
+                value="${res.product_id}">
+              <input type="hidden" id="product_quantites_${
+                res.product_id
+              }" name="product_quantites[]" value="1">
+              <input type="hidden" id="product_rate_${
+                res.product_id
+              }" name="product_rates[]" value="${res.current_rate}">
+              <input type="hidden" id="product_totalrate_${
+                res.product_id
+              }" name="product_totalrates[]" value="${res.current_rate}">
+                  <input type="hidden" id="get_rack_number${
+                       res.product_id
+                     }" name="get_rack_number[]" value="${res.product_code}-${
+                res.product_id
+              }-${rack_id}">
+              <td>${res.product_code.toUpperCase()}</td>
+              <td>${res.product_name.toUpperCase()} (<span class="text-success">${res.brand_name.toUpperCase()}</span>)</td>
+              <td>${res.current_rate}</td>
+              <td>1</td>
+              <td>${(res.current_rate - res.purchase_rate).toFixed(2)}</td>
+              <td>${res.current_rate}</td>
+              <td>
+                <button type="button" onclick="addbarcode_product('${
+                  res.product_code
+                }', 'plus')" class="btn btn-sm btn-success" title="Increase quantity">+ Add</button>
+                <button type="button" onclick="addbarcode_product('${
+                  res.product_code
+                }', 'minus')" class="btn btn-sm btn-warning" title="Decrease quantity">− Remove</button>
+                <button type="button" onclick="removeByid('#product_idN_${
+                  res.product_id
+                }')" class="btn btn-sm btn-danger" title="Remove product">🗑 Delete</button>
+              </td>
+            </tr>
+          `);
 
           getOrderTotal();
         }
       } else {
-        sweeetalert("This Product is out of stock", "error", 1500);
+        sweeetalert("This product is out of stock", "error", 1500);
       }
-      //console.log(jsonObj);
     },
   });
 }
