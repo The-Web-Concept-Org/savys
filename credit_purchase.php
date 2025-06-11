@@ -281,26 +281,3 @@ if (!empty($_REQUEST['edit_purchase_id'])) {
 </html>
 <?php include_once 'includes/foot.php'; ?>
 
-<script>
-  $(document).ready(function() {
-    $('#warehouse_id').change(function() {
-      var warehouse_id = $(this).val();
-      $.ajax({
-        url: 'php_action/custom_action.php',
-        type: 'POST',
-        dataType: 'json',
-        data: {
-          warehouse_id: warehouse_id,
-          action: 'getRackByWarehouse'
-        },
-        success: function(data) {
-          if (data.status === 'success') {
-            $('#rack_id').html(data.options);
-          } else {
-            $('#rack_id').html('<option value="">No racks found</option>');
-          }
-        }
-      });
-    });
-  });
-</script>

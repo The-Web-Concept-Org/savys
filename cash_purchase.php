@@ -25,7 +25,25 @@ if (!empty($_REQUEST['edit_purchase_id'])) {
           <form action="php_action/custom_action.php" method="POST" id="sale_order_fm">
             <input type="hidden" name="product_purchase_id" value="<?= @empty($_REQUEST['edit_purchase_id']) ? "" : base64_decode($_REQUEST['edit_purchase_id']) ?>">
             <input type="hidden" name="payment_type" id="payment_type" value="cash_purchase">
-            <div class="row d-flex justify-content-end">
+            <?php if ($_SESSION['user_role'] == 'admin') { ?>
+              <div class="dropdown-wrapper ml-auto mb-3">
+                <select name="warehouse_id" id="warehouse_id" class="custom-dropdown text-capitalize" required>
+                  <option selected disabled>Select Warehouse</option>
+                  <?php
+                  $warehouse = mysqli_query($dbc, "SELECT * FROM warehouse WHERE warehouse_status = 1");
+                  while ($row = mysqli_fetch_array($warehouse)) {
+                  ?>
+                    <option <?= (@$fetchOrder['warehouse_id'] == $row['warehouse_id']) ? "selected" : "" ?> class="text-capitalize"
+                      value="<?= $row['warehouse_id'] ?>">
+                      <?= $row['warehouse_name'] ?>
+                    </option>
+                  <?php } ?>
+                </select>
+              </div>
+            <?php } else { ?>
+              <input type="hidden" name="warehouse_id" id="warehouse_id" value="<?= $_SESSION['warehouse_id'] ?>">
+            <?php } ?>
+            <!-- <div class="row d-flex justify-content-end">
               <div class="col-12 col-sm-6 col-md-3 mb-2">
                 <div class="d-flex justify-content-between align-items-center mb-2">
                   <label for="get_warehouse_name" class="mb-0">Warehouse</label>
@@ -35,13 +53,12 @@ if (!empty($_REQUEST['edit_purchase_id'])) {
                   id="get_warehouse_name"
                   name="warehouse_id">
                   <option value="">Select Warehouse</option>
-                  <!-- Example options - Replace with dynamic data using JavaScript or backend -->
                   <option data-location="Tokyo" value="1">Tokyo Warehouse</option>
                   <option data-location="Osaka" value="2">Osaka Warehouse</option>
                   <option data-location="Yokohama" value="3">Yokohama Warehouse</option>
                 </select>
               </div>
-            </div>
+            </div> -->
 
             <div class="row form-group">
               <!-- Purchase ID -->
@@ -116,7 +133,24 @@ if (!empty($_REQUEST['edit_purchase_id'])) {
                   id="get_product_code"
                   class="form-control">
               </div>
+              <div class="col-2 col-md-2">
+                <label>Rack</label>
+                <select class="form-control searchableSelect" required name="rack_id" id="rack_id">
+                  <option selected disabled>Select Rack</option>
+                  <?php
+                  if (isset($_SESSION['warehouse_id'])) {
+                    $warehouse_id =  $_SESSION['warehouse_id'];
+                  }
 
+                  $result = mysqli_query($dbc, "SELECT * FROM racks WHERE status=1 AND warehouse_id = '$warehouse_id' ");
+                  while ($row = mysqli_fetch_array($result)) {
+                  ?>
+                    <option <?= (@$fetchPurchase['rack_id'] == $row['rack_id']) ? "selected" : "" ?> value="<?= $row["rack_id"] ?>">
+                      <?= $row["name"] ?>
+                    </option>
+                  <?php } ?>
+                </select>
+              </div>
               <div class="col-12 col-sm-6 col-md-3 mb-2">
                 <div class="d-flex justify-content-between align-items-center mb-2">
                   <label for="get_product_name" class="mb-0 ">Products</label>
@@ -143,7 +177,7 @@ if (!empty($_REQUEST['edit_purchase_id'])) {
                 </select>
               </div>
 
-              <div class="col-12 col-sm-6 col-md-2 mb-2">
+              <div class="col-12 col-sm-6 col-md-1 mb-2">
                 <label for="get_product_price">Purchase Rate</label>
                 <input type="number"
                   min="0"
@@ -152,7 +186,7 @@ if (!empty($_REQUEST['edit_purchase_id'])) {
                   placeholder="Enter purchase rate">
               </div>
 
-              <div class="col-12 col-sm-6 col-md-2 mb-2">
+              <div class="col-12 col-sm-6 col-md-1 mb-2">
                 <label for="get_sale_price">Sale Rate</label>
                 <input type="number"
                   min="0"
@@ -186,6 +220,7 @@ if (!empty($_REQUEST['edit_purchase_id'])) {
                   <thead class="table-bordered">
                     <tr>
                       <th><strong>Product Barcode</strong></th>
+                      <th><strong>Rack Barcode</strong></th>
                       <th><strong>Product Name</strong></th>
                       <th><strong>Unit Price</strong></th>
                       <th><strong>Quantity</strong></th>

@@ -1323,3 +1323,27 @@ function printOrder(orderId = null) {
     }); // /ajax function to fetch the printable order
   } // /if orderId
 } // /print order function
+
+// Select Rack According to the warehouse
+
+$(document).ready(function () {
+  $("#warehouse_id").change(function () {
+    var warehouse_id = $(this).val();
+    $.ajax({
+      url: "php_action/custom_action.php",
+      type: "POST",
+      dataType: "json",
+      data: {
+        warehouse_id: warehouse_id,
+        action: "getRackByWarehouse",
+      },
+      success: function (data) {
+        if (data.status === "success") {
+          $("#rack_id").html(data.options);
+        } else {
+          $("#rack_id").html('<option value="">No racks found</option>');
+        }
+      },
+    });
+  });
+});
