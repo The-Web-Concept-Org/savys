@@ -170,8 +170,6 @@ include_once 'functions.php';
 				'user_role' => $_REQUEST['user_role'],
 				'address' => $_REQUEST['address'],
 				'status' => $_REQUEST['status'],
-
-
 			];
 		}
 

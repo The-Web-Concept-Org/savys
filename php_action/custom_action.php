@@ -1022,6 +1022,7 @@ if (isset($_REQUEST['cash_purchase_supplier'])) {
 			'paid' => $_REQUEST['paid_ammount'],
 			'payment_status' => 1,
 			'payment_type' => $_REQUEST['payment_type'],
+			'warehouse_id' => @$_REQUEST['warehouse_id'],
 		];
 
 		if ($_REQUEST['product_purchase_id'] == "") {
@@ -1038,6 +1039,7 @@ if (isset($_REQUEST['cash_purchase_supplier'])) {
 					$total = (float)$product_quantites * $product_rates;
 					$total_ammount += (float)$total;
 					$product_id = $_REQUEST['product_ids'][$x];
+					$rack_id = $_REQUEST['get_rack_id'][$x];
 					// print_r($product_rates);
 					// exit;
 					$order_items = [
@@ -1047,6 +1049,8 @@ if (isset($_REQUEST['cash_purchase_supplier'])) {
 						'purchase_id' => $last_id,
 						'quantity' => $product_quantites,
 						'purchase_item_status' => 1,
+						'warehouse_id' => @$_REQUEST['warehouse_id'],
+						'rack_id' => @$rack_id,
 					];
 
 					insert_data($dbc, 'purchase_item', $order_items);
@@ -1399,4 +1403,24 @@ if (isset($_REQUEST['bill_customer_name'])) {
 		];
 	}
 	echo json_encode($response);
+}
+
+
+// getRackByWarehouse
+
+if (isset($_REQUEST['warehouse_id']) && @$_REQUEST['action'] == 'getRackByWarehouse') {
+	$warehouse_id = $_REQUEST['warehouse_id'];
+	$racks = mysqli_query($dbc, "SELECT * FROM racks WHERE warehouse_id='$warehouse_id' AND status=1");
+	if (mysqli_num_rows($racks) > 0) {
+		$options = '';
+		while ($rack = mysqli_fetch_assoc($racks)) {
+			$options .= '<option value="' . htmlspecialchars($rack['rack_id']) . '">' . htmlspecialchars($rack['name']) . '</option>';
+		}
+
+		// test output only
+		header('Content-Type: application/json');
+		echo json_encode(['status' => 'success', 'options' => $options], JSON_UNESCAPED_SLASHES);
+	} else {
+		echo json_encode(['status' => 'error', 'message' => 'No racks found for this warehouse.']);
+	}
 }

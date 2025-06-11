@@ -10,8 +10,9 @@
   if (isset($_SESSION['userId'])) {
     header('location: dashboard.php');
   }
-
+  
   if ($_POST) {
+
     $username = $_POST['username'];
     $password = $_POST['pass'];
 
@@ -31,26 +32,74 @@
 
       if ($result->num_rows == 1) {
         $password = md5($password);
+        // exists
         $mainSql = "SELECT * FROM users WHERE username = '$username' AND password = '$password'";
         $mainResult = $connect->query($mainSql);
 
         if ($mainResult->num_rows == 1) {
           $value = $mainResult->fetch_assoc();
           $user_id = $value['user_id'];
-          $_SESSION['user_id'] = $user_id;
-          setcookie("user_id", $user_id, time() + 86400, "/");
+          $branch_id = $value['warehouse_id'];
+          $_SESSION['user_id'] = $value['user_id'];
+          setcookie("user_id", $user_id, time() + (86400), "/");
+
+          // set session
           $_SESSION['userId'] = $user_id;
+          $_SESSION['warehouse_id'] = $branch_id;
           header('location: dashboard.php');
         } else {
+
           $msg = "Incorrect username/password combination";
           $sts = "danger";
-        }
+        } // /else
       } else {
-        $msg = "Username does not exist";
+        $msg = "Username doesnot exists";
         $sts = "danger";
-      }
-    }
-  }
+      } // /else
+    } // /else not empty username // password
+
+  } // /if $_POST
+  // if ($_POST) {
+  //   $username = $_POST['username'];
+  //   $password = $_POST['pass'];
+
+  //   if (empty($username) || empty($password)) {
+  //     if ($username == "") {
+  //       $msg = "Username is required";
+  //       $sts = "danger";
+  //     }
+
+  //     if ($password == "") {
+  //       $msg = "Password is required";
+  //       $sts = "danger";
+  //     }
+  //   } else {
+  //     $sql = "SELECT * FROM users WHERE username = '$username'";
+  //     $result = $connect->query($sql);
+
+  //     if ($result->num_rows == 1) {
+  //       $password = md5($password);
+  //       $mainSql = "SELECT * FROM users WHERE username = '$username' AND password = '$password'";
+  //       $mainResult = $connect->query($mainSql);
+
+  //       if ($mainResult->num_rows == 1) {
+  //         $value = $mainResult->fetch_assoc();
+  //         $user_id = $value['user_id'];
+  //         $_SESSION['user_id'] = $user_id;
+  //         setcookie("user_id", $user_id, time() + 86400, "/");
+  //         $_SESSION['userId'] = $user_id;
+  //         header('location: dashboard.php');
+  //       } else {
+  //         $msg = "Incorrect username/password combination";
+  //         $sts = "danger";
+  //       }
+  //     } else {
+  //       $msg = "Username does not exist";
+  //       $sts = "danger";
+  //     }
+  //   }
+  // }
+
   ?>
 </head>
 
@@ -80,7 +129,7 @@
 
           <button class="btn btn-lg btn-admin btn-block" type="submit">Log In</button>
 
-          <p class="mt-5 mb-3 text-muted">samcreations©2025</p>
+          <p class="mt-5 mb-3 text-muted">TheWebConcept©2025</p>
         </form>
       </div>
     </div>
