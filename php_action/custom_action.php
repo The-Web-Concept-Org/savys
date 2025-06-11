@@ -1063,6 +1063,26 @@ if (isset($_REQUEST['cash_purchase_supplier'])) {
 						$quantity_instock = mysqli_fetch_assoc(mysqli_query($dbc, "SELECT quantity_instock FROM  product WHERE product_id='" . $product_id . "' "));
 						$qty = (float)$quantity_instock['quantity_instock'] + $product_quantites;
 						$quantity_update = mysqli_query($dbc, "UPDATE product SET  quantity_instock='$qty' WHERE product_id='" . $product_id . "' ");
+
+						$selected_rack_number = $rack_number;
+						$user_id = $_SESSION['user_id'];
+						$inventory = mysqli_query($dbc, "SELECT * FROM inventory WHERE rack_number = '$selected_rack_number' ");
+						if (mysqli_num_rows($inventory) > 0) {
+
+							$inventory = mysqli_fetch_assoc($inventory);
+							$inventory_qty = (float)$inventory['quantity_instock'] + $product_quantites;
+							$update_inventory = mysqli_query($dbc, "UPDATE inventory SET quantity_instock='" . $inventory_qty . "' WHERE product_id='" . $product_id . "' AND rack_number='" . $selected_rack_number . "' ");
+						} else {
+							$insert_inventory = [
+								'product_id' => $_REQUEST['product_ids'][$x],
+								'quantity_instock' => $product_quantites,
+								'rack_number' => $rack_number,
+								'user_id' => $_SESSION['user_id'],
+								'rack_id' => @$rack_id,
+								'warehouse_id' => @$_REQUEST['warehouse_id'],
+							];
+							insert_data($dbc, 'inventory', $insert_inventory);
+						}
 					}
 
 
