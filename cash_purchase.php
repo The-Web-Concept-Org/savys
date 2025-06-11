@@ -241,7 +241,7 @@ if (!empty($_REQUEST['edit_purchase_id'])) {
                           <input type="hidden" id="product_rate_<?= $r['product_id'] ?>" name="product_rates[]" value="<?= $r['rate'] ?>">
                           <input type="hidden" id="product_totalrate_<?= $r['product_id'] ?>" name="product_totalrates[]" value="<?= $r['rate'] ?>">
                           <input type="hidden" id="get_rack_id<?= $r['product_id'] ?>" name="get_rack_id[]" value="<?= $r['rack_id'] ?>">
-                          <input type="hidden" id="get_rack_number<?= $r['product_id'] ?>" name="get_rack_id[]" value="<?= $r['rack_number'] ?>">
+                          <input type="hidden" id="get_rack_number<?= $r['product_id'] ?>" name="get_rack_number[]" value="<?= $r['rack_number'] ?>">
 
                           <td><?= ucwords($r['product_code']) ?></td>
                           <td><?= $r['rack_number'] ?></td>
@@ -385,7 +385,7 @@ if (!empty($_REQUEST['edit_purchase_id'])) {
   if (<?= @empty($_REQUEST['edit_purchase_id']) ? "false" : "true" ?>) {
     setTimeout(function() {
       $('#warehouse_id').val("<?= @$fetchPurchase['warehouse_id'] ?>").change();
-      $('#warehouse_id').attr('disabled', 'disabled');
+      // $('#warehouse_id').attr('disabled', 'disabled');
     }, 500);
   }
 </script>

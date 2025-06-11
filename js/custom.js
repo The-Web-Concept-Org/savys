@@ -667,8 +667,7 @@ $("#addProductPurchase").on("click", function () {
     $("#get_product_code").val("");
     $("#get_product_price").val("");
     $("#get_sale_price").val("");
-    $("#rack_id").val("");
-    $("#get_product_quantity").val(0);
+    $("#get_product_quantity").val(1);
     $("#instockQty").html("In Stock: 0");
 
     if ($("#product_idN_" + id).length) {

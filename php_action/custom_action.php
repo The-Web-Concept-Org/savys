@@ -1070,6 +1070,7 @@ if (isset($_REQUEST['cash_purchase_supplier'])) {
 						if (mysqli_num_rows($inventory) > 0) {
 
 							$inventory = mysqli_fetch_assoc($inventory);
+
 							$inventory_qty = (float)$inventory['quantity_instock'] + $product_quantites;
 							$update_inventory = mysqli_query($dbc, "UPDATE inventory SET quantity_instock='" . $inventory_qty . "' WHERE product_id='" . $product_id . "' AND rack_number='" . $selected_rack_number . "' ");
 						} else {
@@ -1157,6 +1158,16 @@ if (isset($_REQUEST['cash_purchase_supplier'])) {
 						$quantity_instock = mysqli_fetch_assoc(mysqli_query($dbc, "SELECT quantity_instock FROM  product WHERE product_id='" . $proR['product_id'] . "' "));
 						$newqty = (float)$quantity_instock['quantity_instock'] - (float)$proR['quantity'];
 						$quantity_update = mysqli_query($dbc, "UPDATE product SET  quantity_instock='$newqty' WHERE product_id='" . $proR['product_id'] . "' ");
+						$selected_rack_number = $proR['rack_number'];
+						$user_id = $_SESSION['user_id'];
+						$inventory = mysqli_query($dbc, "SELECT * FROM inventory WHERE rack_number = '$selected_rack_number' ");
+						if (mysqli_num_rows($inventory) > 0) {
+							
+							$inventory = mysqli_fetch_assoc($inventory);
+							$product_quantity = $inventory['quantity_instock'] ?? 0;
+							$inventory_qty = (float)$inventory['quantity_instock'] - (float)$product_quantity;
+							$update_inventory = mysqli_query($dbc, "UPDATE inventory SET quantity_instock='" . $inventory_qty . "' WHERE product_id='" . $proR['product_id'] . "' AND rack_number='" . $selected_rack_number . "' ");
+						}
 					}
 				}
 				deleteFromTable($dbc, "purchase_item", 'purchase_id', $_REQUEST['product_purchase_id']);
@@ -1169,6 +1180,8 @@ if (isset($_REQUEST['cash_purchase_supplier'])) {
 					$product_rates = (float)$_REQUEST['product_rates'][$x];
 					$total = $product_quantites * $product_rates;
 					$total_ammount += (float)$total;
+					$rack_id = $_REQUEST['get_rack_id'][$x];
+					$rack_number = $_REQUEST['get_rack_number'][$x];
 					$purchase_item = [
 						'product_id' => $_REQUEST['product_ids'][$x],
 						'rate' => $product_rates,
@@ -1176,6 +1189,9 @@ if (isset($_REQUEST['cash_purchase_supplier'])) {
 						'purchase_id' => $_REQUEST['product_purchase_id'],
 						'quantity' => $product_quantites,
 						'purchase_item_status' => 1,
+						'warehouse_id' => @$_REQUEST['warehouse_id'],
+						'rack_id' => @$rack_id,
+						'rack_number' => @$rack_number,
 					];
 
 					//update_data($dbc,'order_item', $order_items , 'purchase_id',$_REQUEST['product_purchase_id']);
@@ -1186,6 +1202,25 @@ if (isset($_REQUEST['cash_purchase_supplier'])) {
 						$quantity_instock = mysqli_fetch_assoc(mysqli_query($dbc, "SELECT quantity_instock FROM  product WHERE product_id='" . $product_id . "' "));
 						$qty = (float)$quantity_instock['quantity_instock'] + $product_quantites;
 						$quantity_update = mysqli_query($dbc, "UPDATE product SET  quantity_instock='$qty' WHERE product_id='" . $product_id . "' ");
+						$selected_rack_number = $rack_number;
+						$user_id = $_SESSION['user_id'];
+						$inventory = mysqli_query($dbc, "SELECT * FROM inventory WHERE rack_number = '$selected_rack_number' ");
+						if (mysqli_num_rows($inventory) > 0) {
+
+							$inventory = mysqli_fetch_assoc($inventory);
+							$inventory_qty = (float)$inventory['quantity_instock'] + $product_quantites;
+							$update_inventory = mysqli_query($dbc, "UPDATE inventory SET quantity_instock='" . $inventory_qty . "' WHERE product_id='" . $product_id . "' AND rack_number='" . $selected_rack_number . "' ");
+						} else {
+							$insert_inventory = [
+								'product_id' => $_REQUEST['product_ids'][$x],
+								'quantity_instock' => $product_quantites,
+								'rack_number' => $rack_number,
+								'user_id' => $_SESSION['user_id'],
+								'rack_id' => @$rack_id,
+								'warehouse_id' => @$_REQUEST['warehouse_id'],
+							];
+							insert_data($dbc, 'inventory', $insert_inventory);
+						}
 					}
 
 					$x++;
