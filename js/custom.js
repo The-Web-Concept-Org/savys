@@ -665,10 +665,10 @@ $("#addProductPurchase").on("click", function () {
     sweeetalert("Quantity must be greater than 0", "error", 1500);
     return;
   }
-  if (product_quantity > capacity) {
-    sweeetalert("Quantity cannot be greater than capacity", "error", 1500);
-    return;
-  }
+  // if (product_quantity > capacity) {
+  //   sweeetalert("Quantity cannot be greater than capacity", "error", 1500);
+  //   return;
+  // }
 
   if (id != "" && price != "" && max_qty >= product_quantity) {
     $("#add_pro_type").val("add");
@@ -925,9 +925,9 @@ function addbarcode_product(code, action_value) {
                 }
               }
 
-              if (Currentquantity > parseFloat(res.quantity_instock)) {
+              if (Currentquantity > parseFloat(res.available_quantity)) {
                 sweeetalert(
-                  "Only " + res.quantity_instock + " items in stock!",
+                  "Only " + res.available_quantity + " items in stock!",
                   "error",
                   2000
                 );
@@ -966,10 +966,10 @@ function addbarcode_product(code, action_value) {
                   <td>${(res.current_rate * Currentquantity).toFixed(2)}</td>
                   <td>
                     <button type="button" onclick="addbarcode_product('${
-                      res.product_code
+                      code
                     }', 'plus')" class="btn btn-sm btn-success" title="Increase quantity">+ Add</button>
                     <button type="button" onclick="addbarcode_product('${
-                      res.product_code
+                     code
                     }', 'minus')" class="btn btn-sm btn-warning" title="Decrease quantity">− Remove</button>
                     <button type="button" onclick="removeByid('#product_idN_${
                       res.product_id
@@ -1015,10 +1015,10 @@ function addbarcode_product(code, action_value) {
               <td>${res.current_rate}</td>
               <td>
                 <button type="button" onclick="addbarcode_product('${
-                  res.product_code
+                  code
                 }', 'plus')" class="btn btn-sm btn-success" title="Increase quantity">+ Add</button>
                 <button type="button" onclick="addbarcode_product('${
-                  res.product_code
+                 code
                 }', 'minus')" class="btn btn-sm btn-warning" title="Decrease quantity">− Remove</button>
                 <button type="button" onclick="removeByid('#product_idN_${
                   res.product_id
