@@ -959,13 +959,8 @@ function addbarcode_product(code, action_value) {
               }-${rack_id}">
                                    <td>${res.product_code.toUpperCase()}</td>
                   <td>${res.product_name.toUpperCase()} (<span class="text-success">${res.brand_name.toUpperCase()}</span>)</td>
-                  <td>${res.current_rate}</td>
                   <td>${Currentquantity}</td>
-                  <td>${(
-                    res.current_rate * Currentquantity -
-                    res.purchase_rate * Currentquantity
-                  ).toFixed(2)}</td>
-                  <td>${(res.current_rate * Currentquantity).toFixed(2)}</td>
+                
                   <td>
                     <button type="button" onclick="addbarcode_product('${
                       code
@@ -1011,10 +1006,7 @@ function addbarcode_product(code, action_value) {
               }-${rack_id}">
               <td>${res.product_code.toUpperCase()}</td>
               <td>${res.product_name.toUpperCase()} (<span class="text-success">${res.brand_name.toUpperCase()}</span>)</td>
-              <td>${res.current_rate}</td>
               <td>1</td>
-              <td>${(res.current_rate - res.purchase_rate).toFixed(2)}</td>
-              <td>${res.current_rate}</td>
               <td>
                 <button type="button" onclick="addbarcode_product('${
                   code

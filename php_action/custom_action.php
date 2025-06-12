@@ -644,7 +644,7 @@ if (isset($_REQUEST['barcode_product'])) {
 
 				$x++;
 			} //end of foreach
-			$total_grand = @(float)$_REQUEST['freight'] + $total_ammount - $total_ammount * ((float)$_REQUEST['ordered_discount'] / 100);
+			$total_grand = @(float)$_REQUEST['freight'] + $total_ammount - $total_ammount * ((float)@$_REQUEST['ordered_discount'] / 100);
 
 			$due_amount = (float)$total_grand - @(float)$_REQUEST['paid_ammount'];
 
@@ -657,7 +657,7 @@ if (isset($_REQUEST['barcode_product'])) {
 			}
 			$newOrder = [
 				'total_amount' => $total_ammount,
-				'discount' => $_REQUEST['ordered_discount'],
+				'discount' => @$_REQUEST['ordered_discount'],
 				'grand_total' => $total_grand,
 				'payment_status' => $payment_status,
 				'due' => $due_amount,

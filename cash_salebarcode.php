@@ -40,59 +40,6 @@ if (!empty($_REQUEST['edit_order_id'])) {
                   class="form-control"
                   placeholder="Order Date">
               </div>
-
-              <div class="col-sm-3">
-                <label>Customer Number</label>
-                <input type="number"
-                  onchange="getCustomer_name(this.value)"
-                  value="<?= @$fetchOrder['client_contact'] ?>"
-                  autocomplete="off"
-                  min="0"
-                  class="form-control"
-                  name="client_contact"
-                  list="phone"
-                  placeholder="Enter Customer Number">
-                <datalist id="phone">
-                  <?php
-                  $q = mysqli_query($dbc, "SELECT DISTINCT client_contact from orders");
-                  while ($r = mysqli_fetch_assoc($q)) {
-                  ?>
-                    <option value="<?= $r['client_contact'] ?>"><?= $r['client_contact'] ?></option>
-                  <?php } ?>
-                </datalist>
-              </div>
-
-              <div class="col-sm-3">
-                <label>Customer Name</label>
-                <input type="text"
-                  id="sale_order_client_name"
-                  value="<?= @$fetchOrder['client_name'] ?>"
-                  class="form-control"
-                  autocomplete="off"
-                  name="sale_order_client_name"
-                  list="client_name"
-                  placeholder="Enter Customer Name">
-                <datalist id="client_name">
-                  <?php
-                  $q = mysqli_query($dbc, "SELECT DISTINCT client_name FROM orders");
-                  while ($r = mysqli_fetch_assoc($q)) {
-                  ?>
-                    <option value="<?= $r['client_name'] ?>"><?= $r['client_name'] ?></option>
-                  <?php } ?>
-                </datalist>
-              </div>
-
-              <div class="col-md-3">
-                <label>Order Type</label>
-                <select required class="form-control ratetype" name="ratetype" id="ratetype">
-                  <option value="">-- Select Order Type --</option>
-                  <option selected value="retail">Retail</option>
-                  <option value="wholesale">Wholesale</option>
-                </select>
-              </div>
-            </div> <!-- end of form-group -->
-            <!-- custom product -->
-            <div class="form-group row">
               <div class="col-4 col-md-3">
                 <label class="">Product Barcode</label>
                 <input type="text"
@@ -103,7 +50,10 @@ if (!empty($_REQUEST['edit_order_id'])) {
                   class="form-control">
               </div>
 
-            </div>
+           
+
+            </div> <!-- end of form-group -->
+           
             <!-- custom product -->
             <div class="row">
               <div class="col-12">
@@ -112,10 +62,9 @@ if (!empty($_REQUEST['edit_order_id'])) {
                     <tr>
                       <th style="font-weight:bold;">Code</th>
                       <th style="font-weight:bold;">Product Name</th>
-                      <th style="font-weight:bold;">Unit Price</th>
+                      <!-- <th style="font-weight:bold;">Unit Price</th> -->
                       <th style="font-weight:bold;">Quantity</th>
-                      <th style="font-weight:bold;">Profit</th>
-                      <th style="font-weight:bold;">Total Price</th>
+                      <!-- <th style="font-weight:bold;">Total Price</th> -->
                       <th style="font-weight:bold;">Action</th>
                     </tr>
                   </thead>
@@ -166,7 +115,6 @@ if (!empty($_REQUEST['edit_order_id'])) {
 
                           <td><?= $r['quantity'] ?></td>
 
-                          <td><?= number_format($profit, 2) ?></td>
 
                           <td><?= number_format((float)$r['rate'] * (float)$r['quantity'], 2) ?></td>
 
@@ -193,13 +141,10 @@ if (!empty($_REQUEST['edit_order_id'])) {
 
                   <tfoot>
                     <!-- Total Profit: Separate Row -->
-                    <tr>
-                      <td colspan="6" class="text-right table-bordered font-weight-bold">Total Profit:</td>
-                      <td class="table-bordered font-weight-bold" id="total_profit_amount"><?= number_format($total_profit, 2) ?></td>
-                    </tr>
+                  
 
                     <!-- Sub Total and Discount -->
-                    <tr>
+                    <!-- <tr>
                       <td colspan="3"></td>
                       <td class="table-bordered font-weight-bold">Sub Total:</td>
                       <td class="table-bordered" id="product_total_amount"><?= @$fetchOrder['total_amount'] ?></td>
@@ -217,10 +162,10 @@ if (!empty($_REQUEST['edit_order_id'])) {
                           </div>
                         </div>
                       </td>
-                    </tr>
+                    </tr> -->
 
                     <!-- Grand Total and Paid -->
-                    <tr>
+                    <!-- <tr>
                       <td colspan="3"></td>
                       <td class="table-bordered font-weight-bold">Grand Total:</td>
                       <td class="table-bordered" id="product_grand_total_amount"><?= @$fetchOrder['grand_total'] ?></td>
@@ -230,10 +175,10 @@ if (!empty($_REQUEST['edit_order_id'])) {
                           onkeyup="getRemaingAmount()" name="paid_ammount" value="<?= @$fetchOrder['paid'] ?>"
                           placeholder="Enter amount paid">
                       </td>
-                    </tr>
+                    </tr> -->
 
                     <!-- Remaining and Account -->
-                    <tr>
+                    <!-- <tr>
                       <td colspan="3"></td>
                       <td class="table-bordered font-weight-bold">Remaining Amount:</td>
                       <td class="table-bordered">
@@ -254,7 +199,7 @@ if (!empty($_REQUEST['edit_order_id'])) {
                           <?php endwhile; ?>
                         </select>
                       </td>
-                    </tr>
+                    </tr> -->
                   </tfoot>
                 </table>
               </div>
