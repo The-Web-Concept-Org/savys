@@ -649,7 +649,7 @@ $("#addProductPurchase").on("click", function () {
   var price = $("#get_product_price").val();
   var id = $("#get_product_name :selected").val();
   var code = $("#get_product_code").val();
-  
+
   var rack_id = $("#rack_id").val();
   var product_quantity = parseFloat($("#get_product_quantity").val());
   var pro_type = $("#add_pro_type").val();
@@ -872,14 +872,43 @@ $(document).ready(function () {
       event.preventDefault();
       let barcode = $(this).val().trim();
       if (barcode !== "") {
-        // alert("Scanned barcode: " + barcode);
-        addbarcode_product(barcode, "plus");
-        $(this).val(""); // Clear the input
-
-        // Focus back after short delay
-        setTimeout(() => {
-          $("#barcode_product").focus();
-        }, 100);
+        // Show quantity input popup
+        Swal.fire({
+          title: "Enter Quantity",
+          input: "number",
+          inputAttributes: {
+            min: 1,
+          },
+          inputValue: 1,
+          showCancelButton: true,
+          confirmButtonText: "Add Product",
+          cancelButtonText: "Cancel",
+          inputValidator: (value) => {
+            if (!value || value < 1) {
+              return "Please enter a valid quantity (1 or more)";
+            }
+          },
+          didOpen: () => {
+            const input = Swal.getInput();
+            if (input) {
+              input.focus();
+              input.select(); // This selects the whole value
+            }
+          },
+        }).then((result) => {
+          if (result.isConfirmed) {
+            const quantity = parseInt(result.value);
+            addbarcode_product(barcode, "plus", quantity); // pass quantity
+            $("#barcode_product").val(""); // Clear input
+            setTimeout(() => {
+              $("#barcode_product").focus();
+            }, 100);
+          } else {
+            setTimeout(() => {
+              $("#barcode_product").focus();
+            }, 100);
+          }
+        });
       } else {
         alert("No barcode scanned!");
         setTimeout(() => {
@@ -890,10 +919,9 @@ $(document).ready(function () {
   });
 });
 
-function addbarcode_product(code, action_value) {
+function addbarcode_product(code, action_value, quantityToAdd = 1) {
   let new_code = code;
   let rack_id = new_code.split("-").pop();
-  
 
   $.ajax({
     url: "php_action/custom_action.php",
@@ -913,7 +941,7 @@ function addbarcode_product(code, action_value) {
               var Currentquantity = parseFloat(quantity);
 
               if (action_value === "plus") {
-                Currentquantity += 1;
+                Currentquantity += quantityToAdd;
               } else if (action_value === "minus") {
                 if (Currentquantity > 1) {
                   Currentquantity -= 1;
@@ -957,17 +985,12 @@ function addbarcode_product(code, action_value) {
                      }" name="get_rack_number[]" value="${res.product_code}-${
                 res.product_id
               }-${rack_id}">
-                                   <td>${res.product_code.toUpperCase()}</td>
+                  <td>${res.product_code.toUpperCase()}</td>
                   <td>${res.product_name.toUpperCase()} (<span class="text-success">${res.brand_name.toUpperCase()}</span>)</td>
                   <td>${Currentquantity}</td>
-                
                   <td>
-                    <button type="button" onclick="addbarcode_product('${
-                      code
-                    }', 'plus')" class="btn btn-sm btn-success" title="Increase quantity">+ Add</button>
-                    <button type="button" onclick="addbarcode_product('${
-                     code
-                    }', 'minus')" class="btn btn-sm btn-warning" title="Decrease quantity">− Remove</button>
+                    <button type="button" onclick="addbarcode_product('${code}', 'plus', 1)" class="btn btn-sm btn-success" title="Increase quantity">+ Add</button>
+                    <button type="button" onclick="addbarcode_product('${code}', 'minus', 1)" class="btn btn-sm btn-warning" title="Decrease quantity">− Remove</button>
                     <button type="button" onclick="removeByid('#product_idN_${
                       res.product_id
                     }')" class="btn btn-sm btn-danger" title="Remove product">🗑 Delete</button>
@@ -985,35 +1008,31 @@ function addbarcode_product(code, action_value) {
               <input type="hidden"
                 data-price="${res.current_rate}"
                 data-purchase="${res.purchase_rate}"
-                data-quantity="1"
+                data-quantity="${quantityToAdd}"
                 id="product_ids_${res.product_id}"
                 class="product_ids"
                 name="product_ids[]"
                 value="${res.product_id}">
               <input type="hidden" id="product_quantites_${
                 res.product_id
-              }" name="product_quantites[]" value="1">
+              }" name="product_quantites[]" value="${quantityToAdd}">
               <input type="hidden" id="product_rate_${
                 res.product_id
               }" name="product_rates[]" value="${res.current_rate}">
               <input type="hidden" id="product_totalrate_${
                 res.product_id
               }" name="product_totalrates[]" value="${res.current_rate}">
-                  <input type="hidden" id="get_rack_number${
-                       res.product_id
-                     }" name="get_rack_number[]" value="${res.product_code}-${
+              <input type="hidden" id="get_rack_number${
                 res.product_id
-              }-${rack_id}">
+              }" name="get_rack_number[]" value="${res.product_code}-${
+            res.product_id
+          }-${rack_id}">
               <td>${res.product_code.toUpperCase()}</td>
               <td>${res.product_name.toUpperCase()} (<span class="text-success">${res.brand_name.toUpperCase()}</span>)</td>
-              <td>1</td>
+              <td>${quantityToAdd}</td>
               <td>
-                <button type="button" onclick="addbarcode_product('${
-                  code
-                }', 'plus')" class="btn btn-sm btn-success" title="Increase quantity">+ Add</button>
-                <button type="button" onclick="addbarcode_product('${
-                 code
-                }', 'minus')" class="btn btn-sm btn-warning" title="Decrease quantity">− Remove</button>
+                <button type="button" onclick="addbarcode_product('${code}', 'plus', 1)" class="btn btn-sm btn-success" title="Increase quantity">+ Add</button>
+                <button type="button" onclick="addbarcode_product('${code}', 'minus', 1)" class="btn btn-sm btn-warning" title="Decrease quantity">− Remove</button>
                 <button type="button" onclick="removeByid('#product_idN_${
                   res.product_id
                 }')" class="btn btn-sm btn-danger" title="Remove product">🗑 Delete</button>

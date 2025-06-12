@@ -50,10 +50,10 @@ if (!empty($_REQUEST['edit_order_id'])) {
                   class="form-control">
               </div>
 
-           
+
 
             </div> <!-- end of form-group -->
-           
+
             <!-- custom product -->
             <div class="row">
               <div class="col-12">
@@ -105,7 +105,7 @@ if (!empty($_REQUEST['edit_order_id'])) {
                           <input type="hidden" id="get_rack_number<?= $r['product_id'] ?>" name="get_rack_number[]"
                             value="<?= $r['product_code'] ?>">
 
-                  
+
 
                           <td style="text-transform: uppercase;"><?= ucwords($r['product_code']) ?></td>
 
@@ -131,7 +131,7 @@ if (!empty($_REQUEST['edit_order_id'])) {
 
                             <button type="button" onclick="removeByid('#product_idN_<?= $r['product_id'] ?>')"
                               class="btn btn-sm btn-danger" title="Remove product">
-                             🗑 Delete
+                              🗑 Delete
                             </button>
                           </td>
                         </tr>
@@ -141,7 +141,7 @@ if (!empty($_REQUEST['edit_order_id'])) {
 
                   <tfoot>
                     <!-- Total Profit: Separate Row -->
-                  
+
 
                     <!-- Sub Total and Discount -->
                     <!-- <tr>
@@ -208,7 +208,7 @@ if (!empty($_REQUEST['edit_order_id'])) {
             <div class="row">
               <div class="col-sm-6 offset-6">
 
-                <button class="btn btn-admin float-right " name="sale_order_btn" value="print" type="submit" id="">Save and Print</button>
+                <button class="btn btn-admin float-right " name="sale_order_btn" value="print" type="submit" id="submit_btn">Save and Print</button>
 
               </div>
             </div>
@@ -225,6 +225,13 @@ if (!empty($_REQUEST['edit_order_id'])) {
 </html>
 <?php include_once 'includes/foot.php'; ?>
 <script type="text/javascript">
+  document.addEventListener('keydown', function(event) {
+    if (event.altKey && event.key.toLowerCase() === 's') {
+      event.preventDefault(); // Prevent browser default action
+      $('#submit_btn').click(); // Trigger the submit button click
+    }
+  });
+
   $(document).ready(function() {
     $(window).keydown(function(event) {
       if (event.keyCode == 13) {
@@ -254,3 +261,6 @@ if (!empty($_REQUEST['edit_order_id'])) {
     }
   });
 </script>
+
+<!-- <script>
+</script> -->
