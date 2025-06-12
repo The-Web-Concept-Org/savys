@@ -119,7 +119,7 @@ $btn_name = isset($_REQUEST['edit_product_id']) ? "Update" : "Add";
                 <div class="form-group row">
                   <div class="col-md-2 mb-3">
                     <label>SKU</label>
-                    <input type="number" min="0" class="form-control" id="sku"
+                    <input type="text" min="0" class="form-control" id="sku"
                       placeholder="SKU" name="sku" autocomplete="off"
                       required value="<?= @$fetchproduct['sku'] ?>">
                   </div>

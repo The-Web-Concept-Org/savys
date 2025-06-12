@@ -40,13 +40,13 @@
             <table class="table dataTable" id="view_purchase_tb">
               <thead>
                 <tr>
-                  <th>#</th>
-                  <th>Customer Name</th>
-                  <th>Customer Contact</th>
-                  <th>Date</th>
-                  <th>Amount</th>
-                  <th>Purchase Type</th>
-                  <th>Action</th>
+                  <th><strong>#</strong></th>
+                  <th><strong>Customer Name</strong></th>
+                  <th><strong>Customer Contact</strong></th>
+                  <th><strong>Date</strong></th>
+                  <th><strong>Amount</strong></th>
+                  <th><strong>Purchase Type</strong></th>
+                  <th><strong>Action</strong></th>
                 </tr>
               </thead>
               <tbody>
@@ -81,8 +81,8 @@
                         <?php if (@$userPrivileges['nav_delete'] == 1 || $fetchedUserRole == "admin"): ?>
                           <a href="#" onclick="deleteAlert('<?= $r['purchase_id'] ?>','purchase','purchase_id','view_purchase_tb')" class="btn btn-danger btn-sm m-1">Delete</a>
                         <?php endif; ?>
-                        <a target="_blank" href="print_order.php?id=<?= $r['purchase_id'] ?>&type=purchase" class="btn btn-admin2 btn-sm m-1">Print</a>
-                        <button class="purchase-row btn btn-primary btn-sm m-1" data-toggle="dropdown" data-id="<?= $r['purchase_id'] ?>"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-down" viewBox="0 0 16 16">
+                        <a target="_blank" href="print_order.php?id=<?= $r['purchase_id'] ?>&type=purchase" class="btn btn-admin2  btn-sm m-1">Print</a>
+                        <button class="purchase-row btn btn-primary btn-sm m-1 ml-auto" data-toggle="dropdown" data-id="<?= $r['purchase_id'] ?>"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-down" viewBox="0 0 16 16">
                             <path d="M3.204 5h9.592L8 10.481zm-.753.659 4.796 5.48a1 1 0 0 0 1.506 0l4.796-5.48c.566-.647.106-1.659-.753-1.659H3.204a1 1 0 0 0-.753 1.659" />
                           </svg></button>
                       </div>
@@ -96,7 +96,7 @@
                           <thead>
                             <tr>
                               <th>Sr</th>
-                              <th>Barcode Number</th>
+                              <th>Rack Barcode Number</th>
                               <th>Name</th>
                               <th>Quantity</th>
                               <th>Price</th>

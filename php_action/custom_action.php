@@ -1540,3 +1540,321 @@ if (isset($_REQUEST['getRackCapacity'])) {
 	}
 	echo json_encode($response);
 }
+
+
+// Get Option  Values Based on Rack Number
+
+if (isset($_REQUEST['getOptionValues'])) {
+	$full_code = $_REQUEST['getOptionValues'];
+	$parts = explode('-', $full_code);
+
+	$product_code = isset($parts[0]) ? $parts[0] : null;
+	$rack_id = isset($parts[2]) ? $parts[2] : null;
+
+
+	$product_query = "SELECT * FROM product WHERE product_code = '$product_code' AND status = 1";
+	$product_result = mysqli_query($dbc, $product_query);
+	$product = mysqli_fetch_assoc($product_result);
+
+	$rack_query = "SELECT * FROM racks WHERE rack_id = '$rack_id'";
+	$rack_result = mysqli_query($dbc, $rack_query);
+	$rack = mysqli_fetch_assoc($rack_result);
+
+	echo json_encode([
+		'product' => $product,
+		'rack' => $rack
+	]);
+}
+
+
+
+//  Sale Return 
+/*---------------------- cash purchase   -------------------------------------------------------------------*/
+if (isset($_REQUEST['sale_return_form']) && $_REQUEST['sale_return_form'] == 'sale_return') {
+	if (!empty($_REQUEST['product_ids'])) {
+		# code...
+		$total_ammount = $total_grand = 0;
+		$get_company = mysqli_fetch_assoc(mysqli_query($dbc, "SELECT * FROM company ORDER BY id DESC LIMIT 1"));
+
+		$data = [
+			'sale_return_date' => @$_REQUEST['purchase_date'],
+			'client_name' => @$_REQUEST['cash_purchase_supplier'],
+			'client_contact' => @$_REQUEST['client_contact'],
+			'sale_return_narration' => @$_REQUEST['purchase_narration'],
+			'payment_account' => @$_REQUEST['payment_account'],
+			'customer_account' => @$_REQUEST['customer_account'],
+			'paid' => $_REQUEST['paid_ammount'],
+			'payment_status' => 1,
+			'payment_type' => $_REQUEST['payment_type'],
+			'warehouse_id' => @$_REQUEST['warehouse_id'],
+		];
+
+		if ($_REQUEST['product_purchase_id'] == "") {
+
+			if (insert_data($dbc, 'sale_return', $data)) {
+				$last_id = mysqli_insert_id($dbc);
+
+				$x = 0;
+				foreach ($_REQUEST['product_ids'] as $key => $value) {
+					$total = $qty = 0;
+					$product_quantites = (float)$_REQUEST['product_quantites'][$x];
+					$product_rates = (float)$_REQUEST['product_rates'][$x];
+					$product_Crates = (float)$_REQUEST['get_sale_price'][$x];
+					$total = (float)$product_quantites * $product_rates;
+					$total_ammount += (float)$total;
+					$product_id = $_REQUEST['product_ids'][$x];
+					$rack_id = $_REQUEST['get_rack_id'][$x];
+					$rack_number = $_REQUEST['get_rack_number'][$x];
+					// print_r($product_rates);
+					// exit;
+					$order_items = [
+						'product_id' => $_REQUEST['product_ids'][$x],
+						'rate' => $product_rates,
+						'total' => $total,
+						'sale_return_id' => $last_id,
+						'quantity' => $product_quantites,
+						'sale_return_item_status' => 1,
+						'warehouse_id' => @$_REQUEST['warehouse_id'],
+						'rack_id' => @$rack_id,
+						'rack_number' => @$rack_number,
+					];
+
+					insert_data($dbc, 'sale_return_item', $order_items);
+					mysqli_query($dbc, "UPDATE product SET  current_rate='$product_Crates',purchase_rate='$product_rates' WHERE product_id='" . $product_id . "' ");
+
+					if ($get_company['stock_manage'] == 1) {
+
+						$quantity_instock = mysqli_fetch_assoc(mysqli_query($dbc, "SELECT quantity_instock FROM  product WHERE product_id='" . $product_id . "' "));
+						$qty = (float)$quantity_instock['quantity_instock'] + $product_quantites;
+						$quantity_update = mysqli_query($dbc, "UPDATE product SET  quantity_instock='$qty' WHERE product_id='" . $product_id . "' ");
+
+						$selected_rack_number = $rack_number;
+						$user_id = $_SESSION['user_id'];
+						$inventory = mysqli_query($dbc, "SELECT * FROM inventory WHERE rack_number = '$selected_rack_number' ");
+						if (mysqli_num_rows($inventory) > 0) {
+
+							$inventory = mysqli_fetch_assoc($inventory);
+
+							$inventory_qty = (float)$inventory['quantity_instock'] + $product_quantites;
+							$update_inventory = mysqli_query($dbc, "UPDATE inventory SET quantity_instock='" . $inventory_qty . "' WHERE product_id='" . $product_id . "' AND rack_number='" . $selected_rack_number . "' ");
+						} else {
+							$insert_inventory = [
+								'product_id' => $_REQUEST['product_ids'][$x],
+								'quantity_instock' => $product_quantites,
+								'rack_number' => $rack_number,
+								'user_id' => $_SESSION['user_id'],
+								'rack_id' => @$rack_id,
+								'warehouse_id' => @$_REQUEST['warehouse_id'],
+							];
+							insert_data($dbc, 'inventory', $insert_inventory);
+						}
+					}
+
+
+
+					$x++;
+				} //end of foreach
+				$total_grand = $total_ammount - $total_ammount * ((float)$_REQUEST['ordered_discount'] / 100);
+
+				$due_amount = (float)$total_grand - @(float)$_REQUEST['paid_ammount'];
+				if ($_REQUEST['payment_type'] == "credit_purchase") :
+					if ($due_amount > 0) {
+						$debit = [
+							'debit' => $due_amount,
+							'credit' => 0,
+							'customer_id' => @$_REQUEST['customer_account'],
+							'transaction_from' => 'sale_return',
+							'transaction_type' => $_REQUEST['payment_type'],
+							'transaction_remarks' => "purchased on  purchased id#" . $last_id,
+							'transaction_date' => $_REQUEST['purchase_date'],
+						];
+						// insert_data($dbc, 'transactions', $debit);
+						// $transaction_id = mysqli_insert_id($dbc);
+					}
+				endif;
+				$paidAmount = @(float)$_REQUEST['paid_ammount'];
+				if ($paidAmount > 0) {
+					$credit = [
+						'debit' => @$_REQUEST['paid_ammount'],
+						'credit' => 0,
+						'customer_id' => @$_REQUEST['payment_account'],
+						'transaction_from' => 'purchase',
+						'transaction_type' => $_REQUEST['payment_type'],
+						'transaction_remarks' => "purchased by purchased id#" . $last_id,
+						'transaction_date' => $_REQUEST['purchase_date'],
+					];
+					// insert_data($dbc, 'transactions', $credit);
+					// $transaction_paid_id = mysqli_insert_id($dbc);
+				}
+
+				$newOrder = [
+
+					'total_amount' => $total_ammount,
+					'discount' => $_REQUEST['ordered_discount'],
+					'grand_total' => $total_grand,
+					'due' => $due_amount,
+					'transaction_paid_id' => @$transaction_paid_id,
+					'transaction_id' => @$transaction_id,
+				];
+				if (update_data($dbc, 'sale_return', $newOrder, 'sale_return_id', $last_id)) {
+					# code...
+					//echo "<script>alert('company Updated....!')</script>";
+					$msg = "Sale Return Has been Added";
+					$sts = 'success';
+				} else {
+					$msg = mysqli_error($dbc);
+					$sts = "danger";
+				}
+			} else {
+				$msg = mysqli_error($dbc);
+				$sts = "danger";
+			}
+		} else {
+			if (update_data($dbc, 'sale_return', $data, 'sale_return_id', $_REQUEST['product_purchase_id'])) {
+				$last_id = $_REQUEST['product_purchase_id'];
+
+
+				if ($get_company['stock_manage'] == 1) {
+					$proQ = get($dbc, "sale_return_item WHERE sale_return_id='" . $last_id . "' ");
+
+					while ($proR = mysqli_fetch_assoc($proQ)) {
+						$newqty = 0;
+						$quantity_instock = mysqli_fetch_assoc(mysqli_query($dbc, "SELECT quantity_instock FROM  product WHERE product_id='" . $proR['product_id'] . "' "));
+						$newqty = (float)$quantity_instock['quantity_instock'] - (float)$proR['quantity'];
+						$quantity_update = mysqli_query($dbc, "UPDATE product SET  quantity_instock='$newqty' WHERE product_id='" . $proR['product_id'] . "' ");
+						$selected_rack_number = $proR['rack_number'];
+						$user_id = $_SESSION['user_id'];
+						$inventory = mysqli_query($dbc, "SELECT * FROM inventory WHERE rack_number = '$selected_rack_number' ");
+						if (mysqli_num_rows($inventory) > 0) {
+
+							$inventory = mysqli_fetch_assoc($inventory);
+							$product_quantity = $inventory['quantity_instock'] ?? 0;
+							$inventory_qty = (float)$inventory['quantity_instock'] - (float)$product_quantity;
+							$update_inventory = mysqli_query($dbc, "UPDATE inventory SET quantity_instock='" . $inventory_qty . "' WHERE product_id='" . $proR['product_id'] . "' AND rack_number='" . $selected_rack_number . "' ");
+						}
+					}
+				}
+				deleteFromTable($dbc, "sale_return_item", 'sale_return_id', $_REQUEST['product_purchase_id']);
+				$x = 0;
+				foreach ($_REQUEST['product_ids'] as $key => $value) {
+
+
+					$total = $qty = 0;
+					$product_quantites = (float)$_REQUEST['product_quantites'][$x];
+					$product_rates = (float)$_REQUEST['product_rates'][$x];
+					$total = $product_quantites * $product_rates;
+					$total_ammount += (float)$total;
+					$rack_id = $_REQUEST['get_rack_id'][$x];
+					$rack_number = $_REQUEST['get_rack_number'][$x];
+					$purchase_item = [
+						'product_id' => $_REQUEST['product_ids'][$x],
+						'rate' => $product_rates,
+						'total' => $total,
+						'sale_return_id' => $_REQUEST['product_purchase_id'],
+						'quantity' => $product_quantites,
+						'sale_return_item_status' => 1,
+						'warehouse_id' => @$_REQUEST['warehouse_id'],
+						'rack_id' => @$rack_id,
+						'rack_number' => @$rack_number,
+					];
+
+					//update_data($dbc,'order_item', $order_items , 'purchase_id',$_REQUEST['product_purchase_id']);
+					insert_data($dbc, 'sale_return_item', $purchase_item);
+
+					if ($get_company['stock_manage'] == 1) {
+						$product_id = $_REQUEST['product_ids'][$x];
+						$quantity_instock = mysqli_fetch_assoc(mysqli_query($dbc, "SELECT quantity_instock FROM  product WHERE product_id='" . $product_id . "' "));
+						$qty = (float)$quantity_instock['quantity_instock'] + $product_quantites;
+						$quantity_update = mysqli_query($dbc, "UPDATE product SET  quantity_instock='$qty' WHERE product_id='" . $product_id . "' ");
+						$selected_rack_number = $rack_number;
+						$user_id = $_SESSION['user_id'];
+						$inventory = mysqli_query($dbc, "SELECT * FROM inventory WHERE rack_number = '$selected_rack_number' ");
+						if (mysqli_num_rows($inventory) > 0) {
+
+							$inventory = mysqli_fetch_assoc($inventory);
+							$inventory_qty = (float)$inventory['quantity_instock'] + $product_quantites;
+							$update_inventory = mysqli_query($dbc, "UPDATE inventory SET quantity_instock='" . $inventory_qty . "' WHERE product_id='" . $product_id . "' AND rack_number='" . $selected_rack_number . "' ");
+						} else {
+							$insert_inventory = [
+								'product_id' => $_REQUEST['product_ids'][$x],
+								'quantity_instock' => $product_quantites,
+								'rack_number' => $rack_number,
+								'user_id' => $_SESSION['user_id'],
+								'rack_id' => @$rack_id,
+								'warehouse_id' => @$_REQUEST['warehouse_id'],
+							];
+							insert_data($dbc, 'inventory', $insert_inventory);
+						}
+					}
+
+					$x++;
+				} //end of foreach
+				$total_grand = $total_ammount - $total_ammount * ((float)$_REQUEST['ordered_discount'] / 100);
+				$due_amount = (float)$total_grand - @(float)$_REQUEST['paid_ammount'];
+
+
+				$transactions = fetchRecord($dbc, "sale_return", "sale_return_id", $_REQUEST['product_purchase_id']);
+				// @deleteFromTable($dbc, "transactions", 'transaction_id', $transactions['transaction_id']);
+				// @deleteFromTable($dbc, "transactions", 'transaction_id', $transactions['transaction_paid_id']);
+
+
+				if ($_REQUEST['payment_type'] == "credit_purchase") :
+					if ($due_amount > 0) {
+						$debit = [
+							'debit' => $due_amount,
+							'credit' => 0,
+							'customer_id' => @$_REQUEST['customer_account'],
+							'transaction_from' => 'sale_return',
+							'transaction_type' => $_REQUEST['payment_type'],
+							'transaction_remarks' => "purchased on  purchased id#" . $last_id,
+							'transaction_date' => $_REQUEST['purchase_date'],
+						];
+						// insert_data($dbc, 'transactions', $debit);
+						// $transaction_id = mysqli_insert_id($dbc);
+					}
+				endif;
+				$paidAmount = @(float)$_REQUEST['paid_ammount'];
+				if ($paidAmount > 0) {
+					$credit = [
+						'debit' => @$_REQUEST['paid_ammount'],
+						'credit' => 0,
+						'customer_id' => @$_REQUEST['payment_account'],
+						'transaction_from' => 'purchase',
+						'transaction_type' => $_REQUEST['payment_type'],
+						'transaction_remarks' => "purchased by purchased id#" . $last_id,
+						'transaction_date' => $_REQUEST['purchase_date'],
+					];
+					// insert_data($dbc, 'transactions', $credit);
+					// $transaction_paid_id = mysqli_insert_id($dbc);
+				}
+
+				$newOrder = [
+
+					'total_amount' => $total_ammount,
+					'discount' => $_REQUEST['ordered_discount'],
+					'grand_total' => $total_grand,
+					'due' => $due_amount,
+					'transaction_paid_id' => @$transaction_paid_id,
+					'transaction_id' => @$transaction_id,
+				];
+
+				if (update_data($dbc, 'sale_return', $newOrder, 'sale_return_id', $_REQUEST['product_purchase_id'])) {
+					# code...
+					//echo "<script>alert('company Updated....!')</script>";
+					$msg = "Sale Return Has been Updated";
+					$sts = 'success';
+				} else {
+					$msg = mysqli_error($dbc);
+					$sts = "danger";
+				}
+			} else {
+				$msg = mysqli_error($dbc);
+				$sts = "danger";
+			}
+		}
+	} else {
+		$msg = "Please Add Any Product";
+		$sts = 'error';
+	}
+	echo json_encode(['msg' => $msg, 'sts' => $sts, 'order_id' => @$last_id, 'type' => "purchase", 'subtype' => $_REQUEST['payment_type']]);
+}

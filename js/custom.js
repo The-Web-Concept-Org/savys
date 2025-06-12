@@ -649,6 +649,7 @@ $("#addProductPurchase").on("click", function () {
   var price = $("#get_product_price").val();
   var id = $("#get_product_name :selected").val();
   var code = $("#get_product_code").val();
+  
   var rack_id = $("#rack_id").val();
   var product_quantity = parseFloat($("#get_product_quantity").val());
   var pro_type = $("#add_pro_type").val();
@@ -892,6 +893,7 @@ $(document).ready(function () {
 function addbarcode_product(code, action_value) {
   let new_code = code;
   let rack_id = new_code.split("-").pop();
+  
 
   $.ajax({
     url: "php_action/custom_action.php",

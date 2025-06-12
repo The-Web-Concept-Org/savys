@@ -18,7 +18,7 @@ if (!empty($_REQUEST['edit_order_id'])) {
 
           <div class="row">
             <div class="col-12 mx-auto h4">
-              <b class="text-center card-text">Cash Sale</b>
+              <b class="text-center card-text">Dispatch</b>
               <a href="cash_salebarcode.php" class="btn btn-admin float-right btn-sm">Add New</a>
             </div>
           </div>
