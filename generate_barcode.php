@@ -11,7 +11,7 @@ if (isset($_REQUEST['id'])) {
 
     // Generate SVG barcode
     $generator = new BarcodeGeneratorSVG();
-    $barcodeSVG = $generator->getBarcode($fetchproduct['rack_number'], $generator::TYPE_CODE_128);
+    $barcodeSVG = $generator->getBarcode($fetchproduct['rack_number'], $generator::TYPE_CODE_11);
 
     // Output HTML
     echo "<div class='printtest'>

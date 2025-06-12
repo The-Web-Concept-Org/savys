@@ -183,7 +183,7 @@ if (!empty($_REQUEST['edit_order_id'])) {
 
                             <button type="button" onclick="removeByid('#product_idN_<?= $r['product_id'] ?>')"
                               class="btn btn-sm btn-danger" title="Remove product">
-                              ðŸ—‘ï¸ Delete
+                             🗑 Delete
                             </button>
                           </td>
                         </tr>

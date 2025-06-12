@@ -51,7 +51,7 @@
               </thead>
               <tbody>
                 <?php
-                $q = mysqli_query($dbc, "SELECT * FROM purchase");
+                $q = mysqli_query($dbc, "SELECT * FROM purchase ORDER BY purchase_id DESC");
                 $c = 0;
                 while ($r = mysqli_fetch_assoc($q)) {
                   $c++;
@@ -166,6 +166,7 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {
+
     const rows = document.querySelectorAll('.purchase-row');
     rows.forEach(row => {
       row.addEventListener('click', function() {
