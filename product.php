@@ -131,7 +131,7 @@ $btn_name = isset($_REQUEST['edit_product_id']) ? "Update" : "Add";
                   </div>
                   <div class="col-md-2 mb-3">
                     <label>UOM</label>
-                    <input type="text"  class="form-control" id="uom"
+                    <input type="text" class="form-control" id="uom"
                       placeholder="UOM Here" name="uom" autocomplete="off"
                       required value="<?= @$fetchproduct['uom'] ?>">
                   </div>
@@ -217,9 +217,7 @@ $btn_name = isset($_REQUEST['edit_product_id']) ? "Update" : "Add";
                     <th>Name</th>
                     <th>Name Urdu</th>
                     <th>Brand/Category</th>
-                    <th>Selling Price</th>
-                    <th>Wholesale Price</th>
-                    <?php if ($get_company['stock_manage'] == 1): ?>
+                                      <?php if ($get_company['stock_manage'] == 1): ?>
                       <th>Quantity In Stock</th>
                     <?php endif; ?>
                     <th class="d-print-none">Action</th>
@@ -236,28 +234,29 @@ $btn_name = isset($_REQUEST['edit_product_id']) ? "Update" : "Add";
                   ?>
                     <tr>
                       <td><?= $c ?></td>
-                      <td><?= $r['product_code'] ?></td>
                       <td><img src="./img/uploads/<?= $r['product_image'] ?>" width="100" height="100" alt=""></td>
+                      <td><?= $r['product_code'] ?></td>
                       <td><?= $r['product_name'] ?></td>
                       <td><?= $r['product_name_urdu'] ?></td>
                       <td><?= $brandFetched['brand_name'] ?>/<?= $categoryFetched['categories_name'] ?></td>
-                      <td><?= $r['current_rate'] ?></td>
-                      <td><?= $r['f_days'] ?></td>
+                   
+                       
+                        <?php
+                        $fetchProductInventory = mysqli_fetch_assoc(mysqli_query($dbc, "SELECT SUM(quantity_instock) as quantity_instock FROM inventory WHERE product_id = '{$r['product_id']}'"));
+                        ?>
 
-                      <?php if ($get_company['stock_manage'] == 1): ?>
-                        <?php if ($r['quantity_instock'] > $r['alert_at']): ?>
-                          <td>
-                            <span class="badge p-1 badge-success d-print-none">
-                              <?= $r['quantity_instock'] ?>
-                            </span>
-                          </td>
-                        <?php else: ?>
-                          <td>
-                            <span class="badge p-1 badge-danger">
-                              <?= $r['quantity_instock'] ?>
-                            </span>
-                          </td>
-                        <?php endif; ?>
+                      <?php if ($fetchProductInventory['quantity_instock'] > $r['alert_at']): ?>
+                        <td>
+                          <span class="badge p-1 badge-success d-print-none">
+                           <?= $fetchProductInventory['quantity_instock'] ?>
+                          </span>
+                        </td>
+                      <?php else: ?>
+                        <td>
+                          <span class="badge p-1 badge-danger">
+                           <?= $fetchProductInventory['quantity_instock'] ?>
+                          </span>
+                        </td>
                       <?php endif; ?>
 
                       <td class="d-print-none">

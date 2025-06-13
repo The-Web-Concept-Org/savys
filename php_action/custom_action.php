@@ -1505,18 +1505,19 @@ if (isset($_REQUEST['warehouse_id']) && @$_REQUEST['action'] == 'getRackByWareho
 	$warehouse_id = $_REQUEST['warehouse_id'];
 	$racks = mysqli_query($dbc, "SELECT * FROM racks WHERE warehouse_id='$warehouse_id' AND status=1");
 	if (mysqli_num_rows($racks) > 0) {
-		$options = '';
+		$options = '<option selected disabled>Select Rack</option>';
+
 		while ($rack = mysqli_fetch_assoc($racks)) {
 			$options .= '<option value="' . htmlspecialchars($rack['rack_id']) . '">' . htmlspecialchars($rack['name']) . '</option>';
 		}
 
-		// test output only
 		header('Content-Type: application/json');
 		echo json_encode(['status' => 'success', 'options' => $options], JSON_UNESCAPED_SLASHES);
 	} else {
 		echo json_encode(['status' => 'error', 'message' => 'No racks found for this warehouse.']);
 	}
 }
+
 
 
 
@@ -1858,3 +1859,292 @@ if (isset($_REQUEST['sale_return_form']) && $_REQUEST['sale_return_form'] == 'sa
 	}
 	echo json_encode(['msg' => $msg, 'sts' => $sts, 'order_id' => @$last_id, 'type' => "purchase", 'subtype' => $_REQUEST['payment_type']]);
 }
+
+
+// Inventory Management
+
+// Warehouse Report
+
+if (isset($_POST['warehouse_report']) && empty($_POST['rack_report']) && empty($_POST['product_report'])) {
+	$warehouse_id = $_POST['warehouse_report'];
+
+	$query = "SELECT 
+                i.rack_number,
+                r.name AS rack_name,
+                w.warehouse_name,
+                r.zone AS rack_zone,
+                p.product_name,
+                i.quantity_instock
+            FROM 
+                inventory i
+            LEFT JOIN 
+                warehouse w ON i.warehouse_id = w.warehouse_id
+            LEFT JOIN 
+                racks r ON i.rack_id = r.rack_id
+            LEFT JOIN 
+                product p ON i.product_id = p.product_id
+            WHERE 
+                i.warehouse_id = '$warehouse_id'
+            ORDER BY 
+                r.name, p.product_name";
+
+	$result = mysqli_query($dbc, $query);
+
+	if (mysqli_num_rows($result) > 0) {
+		$output = '';
+		$sr = 1;
+		while ($row = mysqli_fetch_assoc($result)) {
+			$output .= '<tr>';
+			$output .= '<td>' . $sr++ . '</td>';
+			$output .= '<td>' . htmlspecialchars($row['warehouse_name']) . '</td>';
+			$output .= '<td>' . htmlspecialchars($row['rack_number']) . '</td>';
+			$output .= '<td>' . htmlspecialchars($row['rack_name']) . '</td>';
+			$output .= '<td>' . htmlspecialchars($row['rack_zone']) . '</td>';
+			$output .= '<td>' . htmlspecialchars($row['product_name']) . '</td>';
+			$output .= '<td>' . htmlspecialchars($row['quantity_instock']) . '</td>';
+			$output .= '</tr>';
+		}
+
+		echo json_encode(['status' => 'success', 'data' => $output]);
+	} else {
+		echo json_encode(['status' => 'error', 'message' => 'No inventory found.']);
+	}
+	exit;
+} elseif (!empty($_POST['warehouse_report']) && !empty($_POST['rack_report']) && empty($_POST['product_report'])) {
+	$warehouse_id = $_POST['warehouse_report'];
+	$rack_id = $_POST['rack_report'];
+
+	$query = "SELECT 
+                i.rack_number,
+                r.name AS rack_name,
+                w.warehouse_name,
+                r.zone AS rack_zone,
+                p.product_name,
+                i.quantity_instock
+            FROM 
+                inventory i
+            LEFT JOIN 
+                warehouse w ON i.warehouse_id = w.warehouse_id
+            LEFT JOIN 
+                racks r ON i.rack_id = r.rack_id
+            LEFT JOIN 
+                product p ON i.product_id = p.product_id
+            WHERE 
+                i.warehouse_id = '$warehouse_id'
+                AND i.rack_id = '$rack_id'
+            ORDER BY 
+                p.product_name";
+
+	$result = mysqli_query($dbc, $query);
+
+	if (mysqli_num_rows($result) > 0) {
+		$output = '';
+		$sr = 1;
+		while ($row = mysqli_fetch_assoc($result)) {
+			$output .= '<tr>';
+			$output .= '<td>' . $sr++ . '</td>';
+			$output .= '<td>' . htmlspecialchars($row['warehouse_name']) . '</td>';
+			$output .= '<td>' . htmlspecialchars($row['rack_number']) . '</td>';
+			$output .= '<td>' . htmlspecialchars($row['rack_name']) . '</td>';
+			$output .= '<td>' . htmlspecialchars($row['rack_zone']) . '</td>';
+			$output .= '<td>' . htmlspecialchars($row['product_name']) . '</td>';
+			$output .= '<td>' . htmlspecialchars($row['quantity_instock']) . '</td>';
+			$output .= '</tr>';
+		}
+
+		echo json_encode(['status' => 'success', 'data' => $output]);
+	} else {
+		echo json_encode(['status' => 'error', 'message' => 'No inventory found for the selected rack.']);
+	}
+	exit;
+} elseif (!empty($_POST['warehouse_report']) && !empty($_POST['rack_report']) && !empty($_POST['product_report'])) {
+	$warehouse_id = $_POST['warehouse_report'];
+	$rack_id = $_POST['rack_report'];
+	$product_id = $_POST['product_report'];
+
+	$query = "SELECT 
+                i.rack_number,
+                r.name AS rack_name,
+                w.warehouse_name,
+                r.zone AS rack_zone,
+                p.product_name,
+                i.quantity_instock
+            FROM 
+                inventory i
+            LEFT JOIN 
+                warehouse w ON i.warehouse_id = w.warehouse_id
+            LEFT JOIN 
+                racks r ON i.rack_id = r.rack_id
+            LEFT JOIN 
+                product p ON i.product_id = p.product_id
+            WHERE 
+                i.warehouse_id = '$warehouse_id'
+                AND i.rack_id = '$rack_id'
+                AND i.product_id = '$product_id'
+            LIMIT 1";
+
+	$result = mysqli_query($dbc, $query);
+
+	if (mysqli_num_rows($result) > 0) {
+		$output = '';
+		$sr = 1;
+		while ($row = mysqli_fetch_assoc($result)) {
+			$output .= '<tr>';
+			$output .= '<td>' . $sr++ . '</td>';
+			$output .= '<td>' . htmlspecialchars($row['warehouse_name']) . '</td>';
+			$output .= '<td>' . htmlspecialchars($row['rack_number']) . '</td>';
+			$output .= '<td>' . htmlspecialchars($row['rack_name']) . '</td>';
+			$output .= '<td>' . htmlspecialchars($row['rack_zone']) . '</td>';
+			$output .= '<td>' . htmlspecialchars($row['product_name']) . '</td>';
+			$output .= '<td>' . htmlspecialchars($row['quantity_instock']) . '</td>';
+			$output .= '</tr>';
+		}
+
+		echo json_encode(['status' => 'success', 'data' => $output]);
+	} else {
+		echo json_encode(['status' => 'error', 'message' => 'No record found for the selected product in this rack.']);
+	}
+	exit;
+} elseif (empty($_POST['warehouse_report']) && empty($_POST['rack_report']) && !empty($_POST['product_report'])) {
+	$product_id = $_POST['product_report'];
+
+	$query = "SELECT 
+                i.rack_number,
+                r.name AS rack_name,
+                w.warehouse_name,
+                r.zone AS rack_zone,
+                p.product_name,
+                i.quantity_instock
+            FROM 
+                inventory i
+            LEFT JOIN 
+                warehouse w ON i.warehouse_id = w.warehouse_id
+            LEFT JOIN 
+                racks r ON i.rack_id = r.rack_id
+            LEFT JOIN 
+                product p ON i.product_id = p.product_id
+            WHERE 
+                i.product_id = '$product_id'
+            ORDER BY 
+                w.warehouse_name, r.name";
+
+	$result = mysqli_query($dbc, $query);
+
+	if (mysqli_num_rows($result) > 0) {
+		$output = '';
+		$sr = 1;
+		while ($row = mysqli_fetch_assoc($result)) {
+			$output .= '<tr>';
+			$output .= '<td>' . $sr++ . '</td>';
+			$output .= '<td>' . htmlspecialchars($row['warehouse_name']) . '</td>';
+			$output .= '<td>' . htmlspecialchars($row['rack_number']) . '</td>';
+			$output .= '<td>' . htmlspecialchars($row['rack_name']) . '</td>';
+			$output .= '<td>' . htmlspecialchars($row['rack_zone']) . '</td>';
+			$output .= '<td>' . htmlspecialchars($row['product_name']) . '</td>';
+			$output .= '<td>' . htmlspecialchars($row['quantity_instock']) . '</td>';
+			$output .= '</tr>';
+		}
+
+		echo json_encode(['status' => 'success', 'data' => $output]);
+	} else {
+		echo json_encode(['status' => 'error', 'message' => 'No stock entries found for this product.']);
+	}
+	exit;
+} elseif (!empty($_POST['warehouse_report']) && empty($_POST['rack_report']) && !empty($_POST['product_report'])) {
+	$warehouse_id = $_POST['warehouse_report'];
+	$product_id = $_POST['product_report'];
+
+	$query = "SELECT 
+                i.rack_number,
+                r.name AS rack_name,
+                w.warehouse_name,
+                r.zone AS rack_zone,
+                p.product_name,
+                i.quantity_instock
+            FROM 
+                inventory i
+            LEFT JOIN 
+                warehouse w ON i.warehouse_id = w.warehouse_id
+            LEFT JOIN 
+                racks r ON i.rack_id = r.rack_id
+            LEFT JOIN 
+                product p ON i.product_id = p.product_id
+            WHERE 
+                i.warehouse_id = '$warehouse_id'
+                AND i.product_id = '$product_id'
+            ORDER BY 
+                r.name";
+
+	$result = mysqli_query($dbc, $query);
+
+	if (mysqli_num_rows($result) > 0) {
+		$output = '';
+		$sr = 1;
+		while ($row = mysqli_fetch_assoc($result)) {
+			$output .= '<tr>';
+			$output .= '<td>' . $sr++ . '</td>';
+			$output .= '<td>' . htmlspecialchars($row['warehouse_name']) . '</td>';
+			$output .= '<td>' . htmlspecialchars($row['rack_number']) . '</td>';
+			$output .= '<td>' . htmlspecialchars($row['rack_name']) . '</td>';
+			$output .= '<td>' . htmlspecialchars($row['rack_zone']) . '</td>';
+			$output .= '<td>' . htmlspecialchars($row['product_name']) . '</td>';
+			$output .= '<td>' . htmlspecialchars($row['quantity_instock']) . '</td>';
+			$output .= '</tr>';
+		}
+
+		echo json_encode(['status' => 'success', 'data' => $output]);
+	} else {
+		echo json_encode(['status' => 'error', 'message' => 'No matching stock found for selected warehouse and product.']);
+	}
+	exit;
+}
+
+
+
+
+
+// if (isset($_REQUEST['warehouse_report']) && empty($_REQUEST['rack_report']) && empty($_REQUEST['product_report'])) {
+// 	$warehouse_id = $_REQUEST['warehouse_report'];
+// 	$getInventory = fetchRecord($dbc, "inventory", "warehouse_id", $warehouse_id);
+// 	if ($getInventory) {
+// 		// I  Want to fetch all tthe products according to the warehouse id   and sum of it's quantity_instock in inventory table
+// 		$products = mysqli_query($dbc, "SELECT p.product_name, p.product_code, SUM(i.quantity_instock) AS total_quantity, r.name AS rack_name 
+// 			FROM product p 
+// 			LEFT JOIN inventory i ON p.product_id = i.product_id 
+// 			LEFT JOIN racks r ON i.rack_id = r.rack_id 
+// 			WHERE i.warehouse_id='$warehouse_id' AND p.status=1 
+// 			GROUP BY p.product_id");
+// 		if (mysqli_num_rows($products) > 0) {
+// 			$product_list = [];
+// 			while ($product = mysqli_fetch_assoc($products)) {
+// 				$product_list[] = $product;
+// 			}
+// 			echo json_encode(['status' => 'success', 'warehouse' => $getInventory, 'products' => $product_list]);
+// 		} else {
+// 			echo json_encode(['status' => 'error', 'message' => 'No products found in this warehouse.']);
+// 		}
+// 	}
+// }
+// if (isset($_REQUEST['warehouse_report']) && empty($_REQUEST['rack_report']) && empty($_REQUEST['product_report'])) {
+// 	$warehouse_id = $_REQUEST['warehouse_report'];
+// 	$warehouse = mysqli_fetch_assoc(mysqli_query($dbc, "SELECT * FROM warehouse WHERE warehouse_id='$warehouse_id'"));
+// 	if ($warehouse) {
+// 		$products = mysqli_query($dbc, "SELECT p.product_name, p.product_code, p.quantity_instock, r.name AS rack_name 
+// 			FROM product p 
+// 			LEFT JOIN inventory i ON p.product_id = i.product_id 
+// 			LEFT JOIN racks r ON i.rack_id = r.rack_id 
+// 			WHERE i.warehouse_id='$warehouse_id' AND p.status=1");
+
+// 		if (mysqli_num_rows($products) > 0) {
+// 			$product_list = [];
+// 			while ($product = mysqli_fetch_assoc($products)) {
+// 				$product_list[] = $product;
+// 			}
+// 			echo json_encode(['status' => 'success', 'warehouse' => $warehouse, 'products' => $product_list]);
+// 		} else {
+// 			echo json_encode(['status' => 'error', 'message' => 'No products found in this warehouse.']);
+// 		}
+// 	} else {
+// 		echo json_encode(['status' => 'error', 'message' => 'Warehouse not found.']);
+// 	}
+// }
