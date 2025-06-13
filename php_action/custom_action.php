@@ -1588,6 +1588,7 @@ if (isset($_REQUEST['sale_return_form']) && $_REQUEST['sale_return_form'] == 'sa
 			'payment_status' => 1,
 			'payment_type' => $_REQUEST['payment_type'],
 			'warehouse_id' => @$_REQUEST['warehouse_id'],
+			'purchase_tax'  => @$_REQUEST['purchase_tax'],
 		];
 
 		if ($_REQUEST['product_purchase_id'] == "") {
@@ -1655,6 +1656,10 @@ if (isset($_REQUEST['sale_return_form']) && $_REQUEST['sale_return_form'] == 'sa
 
 					$x++;
 				} //end of foreach
+				$tax = @$_REQUEST['purchase_tax'] ?? 0;
+				if ($tax > 0) {
+					$total_ammount += $total_ammount * ((float)$tax / 100);
+				}
 				$total_grand = $total_ammount - $total_ammount * ((float)$_REQUEST['ordered_discount'] / 100);
 
 				$due_amount = (float)$total_grand - @(float)$_REQUEST['paid_ammount'];
@@ -2098,53 +2103,3 @@ if (isset($_POST['warehouse_report']) && empty($_POST['rack_report']) && empty($
 	}
 	exit;
 }
-
-
-
-
-
-// if (isset($_REQUEST['warehouse_report']) && empty($_REQUEST['rack_report']) && empty($_REQUEST['product_report'])) {
-// 	$warehouse_id = $_REQUEST['warehouse_report'];
-// 	$getInventory = fetchRecord($dbc, "inventory", "warehouse_id", $warehouse_id);
-// 	if ($getInventory) {
-// 		// I  Want to fetch all tthe products according to the warehouse id   and sum of it's quantity_instock in inventory table
-// 		$products = mysqli_query($dbc, "SELECT p.product_name, p.product_code, SUM(i.quantity_instock) AS total_quantity, r.name AS rack_name 
-// 			FROM product p 
-// 			LEFT JOIN inventory i ON p.product_id = i.product_id 
-// 			LEFT JOIN racks r ON i.rack_id = r.rack_id 
-// 			WHERE i.warehouse_id='$warehouse_id' AND p.status=1 
-// 			GROUP BY p.product_id");
-// 		if (mysqli_num_rows($products) > 0) {
-// 			$product_list = [];
-// 			while ($product = mysqli_fetch_assoc($products)) {
-// 				$product_list[] = $product;
-// 			}
-// 			echo json_encode(['status' => 'success', 'warehouse' => $getInventory, 'products' => $product_list]);
-// 		} else {
-// 			echo json_encode(['status' => 'error', 'message' => 'No products found in this warehouse.']);
-// 		}
-// 	}
-// }
-// if (isset($_REQUEST['warehouse_report']) && empty($_REQUEST['rack_report']) && empty($_REQUEST['product_report'])) {
-// 	$warehouse_id = $_REQUEST['warehouse_report'];
-// 	$warehouse = mysqli_fetch_assoc(mysqli_query($dbc, "SELECT * FROM warehouse WHERE warehouse_id='$warehouse_id'"));
-// 	if ($warehouse) {
-// 		$products = mysqli_query($dbc, "SELECT p.product_name, p.product_code, p.quantity_instock, r.name AS rack_name 
-// 			FROM product p 
-// 			LEFT JOIN inventory i ON p.product_id = i.product_id 
-// 			LEFT JOIN racks r ON i.rack_id = r.rack_id 
-// 			WHERE i.warehouse_id='$warehouse_id' AND p.status=1");
-
-// 		if (mysqli_num_rows($products) > 0) {
-// 			$product_list = [];
-// 			while ($product = mysqli_fetch_assoc($products)) {
-// 				$product_list[] = $product;
-// 			}
-// 			echo json_encode(['status' => 'success', 'warehouse' => $warehouse, 'products' => $product_list]);
-// 		} else {
-// 			echo json_encode(['status' => 'error', 'message' => 'No products found in this warehouse.']);
-// 		}
-// 	} else {
-// 		echo json_encode(['status' => 'error', 'message' => 'Warehouse not found.']);
-// 	}
-// }

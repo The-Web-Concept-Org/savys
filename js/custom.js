@@ -1406,3 +1406,40 @@ let getRackCapacity = (rack_id) => {
     },
   });
 };
+function countTax() {
+  // Get values
+  let subTotal =
+    parseFloat(document.getElementById("product_total_amount").innerText) || 0;
+  let discount =
+    parseFloat(document.getElementById("ordered_discount").value) || 0;
+  let taxInput = document.getElementById("purchase_tax");
+  let tax = parseFloat(taxInput.value) || 0;
+
+  // Restrict tax to maximum 100%
+  if (tax > 100) {
+    tax = 100;
+    taxInput.value = 100;
+
+    Swal.fire({
+      icon: "warning",
+      title: "Invalid Tax",
+      text: "Tax percentage cannot exceed 100%",
+    });
+  }
+
+  // Apply discount
+  let discountedTotal = subTotal - discount;
+
+  // Apply tax
+  let taxAmount = (discountedTotal * tax) / 100;
+
+  // Calculate grand total
+  let grandTotal = discountedTotal + taxAmount;
+
+  // Set result
+  document.getElementById("product_grand_total_amount").innerText =
+    grandTotal.toFixed(2);
+
+  // Also update remaining amount if paid amount already entered
+  getRemaingAmount();
+}

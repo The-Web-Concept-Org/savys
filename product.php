@@ -217,7 +217,7 @@ $btn_name = isset($_REQUEST['edit_product_id']) ? "Update" : "Add";
                     <th>Name</th>
                     <th>Name Urdu</th>
                     <th>Brand/Category</th>
-                                      <?php if ($get_company['stock_manage'] == 1): ?>
+                    <?php if ($get_company['stock_manage'] == 1): ?>
                       <th>Quantity In Stock</th>
                     <?php endif; ?>
                     <th class="d-print-none">Action</th>
@@ -234,27 +234,29 @@ $btn_name = isset($_REQUEST['edit_product_id']) ? "Update" : "Add";
                   ?>
                     <tr>
                       <td><?= $c ?></td>
-                      <td><img src="./img/uploads/<?= $r['product_image'] ?>" width="100" height="100" alt=""></td>
+                      <td>
+                        <img src="./img/uploads/<?= !empty($r['product_image']) ? $r['product_image'] : 'SAVYS_Logo_Final.png' ?>" width="100" height="100" alt="">
+                      </td>
                       <td><?= $r['product_code'] ?></td>
                       <td><?= $r['product_name'] ?></td>
                       <td><?= $r['product_name_urdu'] ?></td>
                       <td><?= $brandFetched['brand_name'] ?>/<?= $categoryFetched['categories_name'] ?></td>
-                   
-                       
-                        <?php
-                        $fetchProductInventory = mysqli_fetch_assoc(mysqli_query($dbc, "SELECT SUM(quantity_instock) as quantity_instock FROM inventory WHERE product_id = '{$r['product_id']}'"));
-                        ?>
+
+
+                      <?php
+                      $fetchProductInventory = mysqli_fetch_assoc(mysqli_query($dbc, "SELECT SUM(quantity_instock) as quantity_instock FROM inventory WHERE product_id = '{$r['product_id']}'"));
+                      ?>
 
                       <?php if ($fetchProductInventory['quantity_instock'] > $r['alert_at']): ?>
                         <td>
                           <span class="badge p-1 badge-success d-print-none">
-                           <?= $fetchProductInventory['quantity_instock'] ?>
+                            <?= $fetchProductInventory['quantity_instock'] ?>
                           </span>
                         </td>
                       <?php else: ?>
                         <td>
                           <span class="badge p-1 badge-danger">
-                           <?= $fetchProductInventory['quantity_instock'] ?>
+                            <?= $fetchProductInventory['quantity_instock'] ?>
                           </span>
                         </td>
                       <?php endif; ?>

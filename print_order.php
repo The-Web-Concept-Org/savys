@@ -126,6 +126,7 @@ for ($i = 0; $i < $print; $i++) {
                                     <thead>
                                         <tr>
                                             <th>Sr No.</th>
+                                            <th class="text-left">Image</th>
                                             <th class="text-left">DESCRIPTION</th>
                                             <th class="text-right">PRICE</th>
                                             <th class="text-right">QUANTITY</th>
@@ -142,6 +143,10 @@ for ($i = 0; $i < $print; $i++) {
                                         ?>
                                             <tr>
                                                 <td class="no"><?= $c ?></td>
+                                                <td>
+                                                    <img src="./img/uploads/<?= !empty($r['product_image']) ? $r['product_image'] : 'SAVYS_Logo_Final.png' ?>" width="100" height="100" alt="">
+                                                </td>
+
                                                 <td class="text-left">
                                                     <h3><?= $r['product_name'] ?></h3>
                                                 </td>
@@ -527,10 +532,10 @@ for ($i = 0; $i < $print; $i++) {
         }
     </style>
 
-
+    <!-- 
     <script>
         window.print();
         setTimeout(function() {
             window.close();
         }, 1000);
-    </script>]
+    </script>] -->

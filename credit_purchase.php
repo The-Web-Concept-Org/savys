@@ -231,7 +231,11 @@ if (!empty($_REQUEST['edit_purchase_id'])) {
                       <td class="table-bordered"> <strong>Sub Total :</strong></td>
                       <td class="table-bordered" id="product_total_amount"><?= @$fetchPurchase['total_amount'] ?></td>
                       <td class="table-bordered"> <strong>Discount :</strong></td>
-                      <td class="table-bordered" id="getDiscount"><input onkeyup="getOrderTotal()" type="number" id="ordered_discount" class="form-control form-control-sm" value="<?= @empty($_REQUEST['edit_order_id']) ? "0" : $fetchPurchase['discount'] ?>" min="0" max="100" name="ordered_discount">
+                      <td class="table-bordered" id="getDiscount">
+                        <div class="row">
+                          <div class="col-6"> <input onkeyup="getOrderTotal()" type="number" id="ordered_discount" class="form-control form-control-sm" value="<?= @empty($_REQUEST['edit_order_id']) ? "0" : $fetchPurchase['discount'] ?>" min="0" max="100" name="ordered_discount"></div>
+                          <div class="col-6"><input type="number" min="0" max="100" name="purchase_tax" id="purchase_tax" placeholder="Purchase Tax" class="form-control form-control-sm" onkeyup="countTax()"></div>
+                        </div>
                       </td>
                     </tr>
                     <tr>
@@ -320,8 +324,6 @@ if (!empty($_REQUEST['edit_purchase_id'])) {
     setTimeout(function() {
       $('#warehouse_id').val("<?= @$fetchPurchase['warehouse_id'] ?>").change();
       // $('#warehouse_id').attr('disabled', 'disabled');
-       }, 500);
+    }, 500);
   }
-
-
 </script>

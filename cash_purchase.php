@@ -273,15 +273,19 @@ if (!empty($_REQUEST['edit_purchase_id'])) {
                       </td>
                       <td class="table-bordered align-middle"><strong>Discount:</strong></td>
                       <td class="table-bordered">
-                        <input
-                          type="number"
-                          id="ordered_discount"
-                          name="ordered_discount"
-                          class="form-control form-control-sm"
-                          value="<?= @empty($_REQUEST['edit_order_id']) ? "0" : $fetchPurchase['discount'] ?>"
-                          min="0" max="100"
-                          placeholder="Enter discount %"
-                          onkeyup="getOrderTotal()">
+                        <div class="row">
+                          <div class="col-6"> <input
+                              type="number"
+                              id="ordered_discount"
+                              name="ordered_discount"
+                              class="form-control form-control-sm"
+                              value="<?= @empty($_REQUEST['edit_order_id']) ? "0" : $fetchPurchase['discount'] ?>"
+                              min="0" max="100"
+                              placeholder="Enter discount %"
+                              onkeyup="getOrderTotal()"></div>
+                          <div class="col-6"><input type="number" min="0" max="100" name="purchase_tax" id="purchase_tax" placeholder="Purchase Tax" class="form-control form-control-sm" onkeyup="countTax()" ></div>
+                        </div>
+
                       </td>
                     </tr>
 
@@ -393,4 +397,9 @@ if (!empty($_REQUEST['edit_purchase_id'])) {
       // $('#warehouse_id').attr('disabled', 'disabled');
     }, 500);
   }
+</script>
+<script>
+  window.onload = function () {
+    countTax();
+  };
 </script>
