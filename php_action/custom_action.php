@@ -398,18 +398,40 @@ if (!empty($_REQUEST['action']) and $_REQUEST['action'] == "product_module") {
 	];
 	if ($_REQUEST['product_id'] == "") {
 
+		// Insert new product
 		if (insert_data($dbc, "product", $data_array)) {
 			$last_id = mysqli_insert_id($dbc);
 
+			// Handle image upload
 			if ($_FILES['product_image']['tmp_name']) {
-				upload_pic($_FILES['product_image'], '../img/uploads/');
-				$product_image = $_SESSION['pic_name'];
-				$data_image = [
-					'product_image' => $product_image,
-				];
-				update_data($dbc, "product", $data_image, "product_id", $last_id);
-			}
+				$targetDir = '../img/uploads/';
+				if (!is_dir($targetDir)) {
+					mkdir($targetDir, 0777, true);
+				}
 
+				$fileName = $_FILES['product_image']['name'];
+				$fileTmp  = $_FILES['product_image']['tmp_name'];
+				$fileExt  = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+				$allowedTypes = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+
+				if (in_array($fileExt, $allowedTypes)) {
+					$newFileName = time() . uniqid() . '.' . $fileExt;
+					$targetFile = $targetDir . $newFileName;
+
+					if (move_uploaded_file($fileTmp, $targetFile)) {
+						$product_image = $newFileName;
+
+						$data_image = [
+							'product_image' => $product_image,
+						];
+						update_data($dbc, "product", $data_image, "product_id", $last_id);
+					} else {
+						die("Error: Unable to move the uploaded file.");
+					}
+				} else {
+					die("Error: Invalid image type.");
+				}
+			}
 
 			$response = [
 				"msg" => "Product Has Been Added",
@@ -424,16 +446,40 @@ if (!empty($_REQUEST['action']) and $_REQUEST['action'] == "product_module") {
 			];
 		}
 	} else {
-		if (update_data($dbc, "product", $data_array, "product_id", base64_decode($_REQUEST['product_id']))) {
-			$last_id = $_REQUEST['product_id'];
+		// Update existing product
+		$last_id = base64_decode($_REQUEST['product_id']);
 
+		if (update_data($dbc, "product", $data_array, "product_id", $last_id)) {
+
+			// Handle image upload
 			if ($_FILES['product_image']['tmp_name']) {
-				upload_pic($_FILES['product_image'], '../img/uploads/');
-				$product_image = $_SESSION['pic_name'];
-				$data_image = [
-					'product_image' => $product_image,
-				];
-				update_data($dbc, "product", $data_image, "product_id", $last_id);
+				$targetDir = '../img/uploads/';
+				if (!is_dir($targetDir)) {
+					mkdir($targetDir, 0777, true);
+				}
+
+				$fileName = $_FILES['product_image']['name'];
+				$fileTmp  = $_FILES['product_image']['tmp_name'];
+				$fileExt  = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+				$allowedTypes = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+
+				if (in_array($fileExt, $allowedTypes)) {
+					$newFileName = time() . uniqid() . '.' . $fileExt;
+					$targetFile = $targetDir . $newFileName;
+
+					if (move_uploaded_file($fileTmp, $targetFile)) {
+						$product_image = $newFileName;
+
+						$data_image = [
+							'product_image' => $product_image,
+						];
+						update_data($dbc, "product", $data_image, "product_id", $last_id);
+					} else {
+						die("Error: Unable to move the uploaded file.");
+					}
+				} else {
+					die("Error: Invalid image type.");
+				}
 			}
 
 			$response = [
@@ -449,6 +495,7 @@ if (!empty($_REQUEST['action']) and $_REQUEST['action'] == "product_module") {
 			];
 		}
 	}
+
 	echo json_encode($response);
 }
 
@@ -588,6 +635,7 @@ if (isset($_REQUEST['barcode_product'])) {
 			'payment_type' => 'cash_in_hand',
 			'vehicle_no' => @$_REQUEST['vehicle_no'],
 			'freight' => @$_REQUEST['freight'],
+			'user_id' => $_SESSION['user_id'],
 		];
 
 		// if ($_REQUEST['product_order_id'] == "") {
@@ -1059,6 +1107,7 @@ if (isset($_REQUEST['cash_purchase_supplier'])) {
 			'payment_status' => 1,
 			'payment_type' => $_REQUEST['payment_type'],
 			'warehouse_id' => @$_REQUEST['warehouse_id'],
+			'user_id' => $_SESSION['user_id'],
 		];
 
 		if ($_REQUEST['product_purchase_id'] == "") {
