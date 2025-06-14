@@ -144,7 +144,7 @@ for ($i = 0; $i < $print; $i++) {
                                             <tr>
                                                 <td class="no"><?= $c ?></td>
                                                 <td>
-                                                    <img src="./img/uploads/<?= !empty($r['product_image']) ? $r['product_image'] : 'SAVYS_Logo_Final.png' ?>" width="100" height="100" alt="">
+                                                    <img src="./img/uploads/<?= !empty($r['product_image']) ? $r['product_image'] : 'SA' ?>" width="100" height="100" alt="">
                                                 </td>
 
                                                 <td class="text-left">
@@ -532,10 +532,10 @@ for ($i = 0; $i < $print; $i++) {
         }
     </style>
 
-    <!-- 
+    
     <script>
         window.print();
         setTimeout(function() {
             window.close();
         }, 1000);
-    </script>] -->
+    </script>]

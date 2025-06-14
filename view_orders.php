@@ -24,8 +24,8 @@
               <thead>
                 <tr>
                   <th>#</th>
-                  <th>Customer Name</th>
-                  <th>Customer Contact</th>
+                  <!-- <th>Customer Name</th>
+                  <th>Customer Contact</th> -->
                   <th>Order Date</th>
                   <th>Amount</th>
                   <th>Order Type</th>
@@ -45,15 +45,15 @@
                 ?>
                   <tr>
                     <td><?= $r['order_id'] ?></td>
-                    <td><?= ucfirst($r['client_name']) ?></td>
-                    <td><?= $r['client_contact'] ?></td>
+                    <!-- <td><?= ucfirst($r['client_name']) ?></td>
+                    <td><?= $r['client_contact'] ?></td> -->
                     <td><?= $r['order_date'] ?></td>
                     <td><?= $r['grand_total'] ?></td>
                     <td><?= $r['payment_type'] ?></td>
 
 
 
-                    <td>
+                    <td class="d-flex">
                       <?php if (@$get_company['sale_interface'] == "barcode") {
                         $cash_sale_url = "cash_salebarcode.php";
                         $credit_sale_url = "credit_sale.php";
@@ -93,8 +93,8 @@
                       <?php endif; ?>
 
 
-                      <!-- <a target="_blank" href="print_sale.php?type=order&id=<?= $r['order_id'] ?>" class="btn btn-admin2 btn-sm m-1">Print</a> -->
-                      <button class="btn btn-info" onclick="printOrder(<?= $r['order_id'] ?>)">Print</button>
+                      <a target="_blank" href="print_order.php?type=order&id=<?= $r['order_id'] ?>" class="btn btn-admin2 btn-sm m-1">Print</a>
+                      <!-- <button class="btn btn-info btn-sm m-1" onclick="printOrder(<?= $r['order_id'] ?>)">Print</button> -->
                     </td>
                   </tr>
                 <?php  } ?>

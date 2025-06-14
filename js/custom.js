@@ -165,24 +165,36 @@ $(document).ready(function () {
       },
       success: function (response) {
         if (response.sts === "success") {
-          // Reset the form
-          form[0].reset();
+          // Show SweetAlert2 popup with 2 options
+          Swal.fire({
+            title: "Sale Created Successfully!",
+            text: "What would you like to do next?",
+            icon: "success",
+            showCancelButton: true,
+            confirmButtonText: "Print",
+            cancelButtonText: "Add New",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              // Open print page in new tab
+              window.open("print_order.php?id=" + response.order_id + "&type=" + response.type ,"_blank");
+            }
 
-          // Clear table and totals
-          $("#purchase_product_tb").html("");
-          $("#product_grand_total_amount").html("");
-          $("#product_total_amount").html("");
+            // Either way, reset the form and clear values
+            form[0].reset();
+            $("#purchase_product_tb").html("");
+            $("#product_grand_total_amount").html("");
+            $("#product_total_amount").html("");
+          });
 
-          // Print the order
-          printOrder(response.order_id);
+          $("#sale_order_btn").prop("disabled", false);
+          $("#sale_order_print").prop("disabled", false);
         }
 
         if (response.sts === "error") {
           sweeetalert(response.msg, response.sts, 1500);
+          $("#sale_order_btn").prop("disabled", false);
+          $("#sale_order_print").prop("disabled", false);
         }
-
-        $("#sale_order_btn").prop("disabled", false);
-        $("#sale_order_print").prop("disabled", false);
       },
       error: function (xhr, status, error) {
         console.error("AJAX Error:", status, error);
@@ -1352,21 +1364,29 @@ function printOrder(orderId = null) {
       },
       dataType: "text",
       success: function (response) {
-        var mywindow = window.open("", "butt traders", "height=400,width=600");
-        mywindow.document.write("<html><head><title>Order Invoice</title>");
-        mywindow.document.write("</head><body>");
-        mywindow.document.write(response);
-        mywindow.document.write("</body></html>");
+        var printWindow = window.open(
+          "",
+          "butt traders",
+          "height=600,width=800"
+        );
 
-        mywindow.document.close(); // necessary for IE >= 10
-        mywindow.focus(); // necessary for IE >= 10
-
-        mywindow.print();
-        mywindow.close();
-      }, // /success function
-    }); // /ajax function to fetch the printable order
-  } // /if orderId
-} // /print order function
+        // Write content with a proper onload event
+        printWindow.document.open();
+        printWindow.document.write(`
+          <html>
+            <head>
+              <title>Order Invoice</title>
+            </head>
+            <body onload="window.focus(); window.print();">
+              ${response}
+            </body>
+          </html>
+        `);
+        printWindow.document.close();
+      },
+    });
+  }
+}
 
 // Select Rack According to the warehouse
 
