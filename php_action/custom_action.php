@@ -1108,6 +1108,7 @@ if (isset($_REQUEST['cash_purchase_supplier'])) {
 			'payment_type' => $_REQUEST['payment_type'],
 			'warehouse_id' => @$_REQUEST['warehouse_id'],
 			'user_id' => $_SESSION['user_id'],
+			'purchase_tax' => @$_REQUEST['purchase_tax'],
 		];
 
 		if ($_REQUEST['product_purchase_id'] == "") {
@@ -1175,6 +1176,10 @@ if (isset($_REQUEST['cash_purchase_supplier'])) {
 
 					$x++;
 				} //end of foreach
+				$tax = @$_REQUEST['purchase_tax'] ?? 0;
+				if ($tax > 0) {
+					$total_ammount += $total_ammount * ((float)$tax / 100);
+				}
 				$total_grand = $total_ammount - $total_ammount * ((float)$_REQUEST['ordered_discount'] / 100);
 
 				$due_amount = (float)$total_grand - @(float)$_REQUEST['paid_ammount'];
@@ -1637,7 +1642,7 @@ if (isset($_REQUEST['sale_return_form']) && $_REQUEST['sale_return_form'] == 'sa
 			'payment_status' => 1,
 			'payment_type' => $_REQUEST['payment_type'],
 			'warehouse_id' => @$_REQUEST['warehouse_id'],
-			'purchase_tax'  => @$_REQUEST['purchase_tax'],
+			// 'purchase_tax'  => @$_REQUEST['purchase_tax'],
 		];
 
 		if ($_REQUEST['product_purchase_id'] == "") {
@@ -1705,10 +1710,10 @@ if (isset($_REQUEST['sale_return_form']) && $_REQUEST['sale_return_form'] == 'sa
 
 					$x++;
 				} //end of foreach
-				$tax = @$_REQUEST['purchase_tax'] ?? 0;
-				if ($tax > 0) {
-					$total_ammount += $total_ammount * ((float)$tax / 100);
-				}
+				// $tax = @$_REQUEST['purchase_tax'] ?? 0;
+				// if ($tax > 0) {
+				// 	$total_ammount += $total_ammount * ((float)$tax / 100);
+				// }
 				$total_grand = $total_ammount - $total_ammount * ((float)$_REQUEST['ordered_discount'] / 100);
 
 				$due_amount = (float)$total_grand - @(float)$_REQUEST['paid_ammount'];
