@@ -19,8 +19,8 @@ if ($getCustomer) {
 							<div class="card-header text-center h4"><?php echo ucwords($_REQUEST['type']); ?> Information</div>
 							<div class="card-body">
 								<form action="php_action/custom_action.php" method="post" id="formData">
-									<input type="hidden" name="add_manually_user" value="<?php echo $_REQUEST['type']; ?>">
-									<input type="hidden" name="customer_id" value="<?php echo $_REQUEST['id']; ?>">
+									<input type="hidden" name="add_manually_user" value="<?php echo @$_REQUEST['type']; ?>">
+									<input type="hidden" name="customer_id" value="<?php echo @$_REQUEST['id']; ?>">
 									<div class="form-group row">
 										<div class="col-sm-6">
 											<label for="customer_name">Name:</label>
