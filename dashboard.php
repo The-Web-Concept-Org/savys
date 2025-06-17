@@ -211,8 +211,18 @@ if (isset($_REQUEST['orderdate']) && $_REQUEST['orderdate'] !== '') {
                           <p class="small text-muted mb-0">Total Orders</p>
                           <span class="h3 mb-0">
                             <?php
-                            @$total_purchase = mysqli_fetch_assoc(mysqli_query($dbc, "SELECT sum(grand_total) as total_sales , timestamp FROM purchase where 1=1 $date_select "))['total_sales'];
-                            echo $total_purchase2 = isset($total_purchase) ? $total_purchase : "0";
+                            // Count today's total orders
+                            @$total_orders = mysqli_fetch_assoc(mysqli_query($dbc, "
+        SELECT 
+            COUNT(*) AS total_orders
+        FROM 
+            orders
+        WHERE 
+            1=1 $date_select 
+    "))['total_orders'];
+                            $total_orders = isset($total_orders) ? $total_orders : 0;
+
+                            echo number_format($total_orders);
                             ?>
 
                           </span>
