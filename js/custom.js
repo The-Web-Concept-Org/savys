@@ -754,7 +754,7 @@ $("#addProductPurchase").on("click", function () {
           <input type="hidden" id="get_rack_number${id}" name="get_rack_number[]" value="${code}-${id}-${rack_id}">
           <td>${code}</td>
           <td>${code}-${id}-${rack_id}</td>
-          <td>${nalikome}</td>
+          <td>${name}</td>  
           <td>${price}</td>
           <td>${product_quantity}</td>
           <td>${total_price}</td>
