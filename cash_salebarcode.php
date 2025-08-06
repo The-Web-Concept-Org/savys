@@ -102,8 +102,8 @@ if (!empty($_REQUEST['edit_order_id'])) {
 
                           <input type="hidden" id="product_totalrate_<?= $r['product_id'] ?>" name="product_totalrates[]"
                             value="<?= $r['rate'] ?>">
-                          <input type="hidden" id="get_rack_number<?= $r['product_id'] ?>" name="get_rack_number[]"
-                            value="<?= $r['product_code'] ?>">
+                          <input type="hidden" id="get_rack_number<?= $r['product_id'] ?>" name="get_rack_number[]" value="<?= $r['rack_number'] ?>">
+                          <input type="hidden" id="get_rack_id<?= $r['product_id'] ?>" name="get_rack_id[]" value="<?= $r['rack_id'] ?>">
 
 
 
@@ -111,20 +111,19 @@ if (!empty($_REQUEST['edit_order_id'])) {
 
                           <td><?= ucwords($r['product_name']) ?> (<span class="text-success"><?= ucwords($r['brand_name']) ?></span>)</td>
 
-                          <td><?= $r['rate'] ?></td>
 
                           <td><?= $r['quantity'] ?></td>
 
 
-                          <td><?= number_format((float)$r['rate'] * (float)$r['quantity'], 2) ?></td>
+                        
 
                           <td>
-                            <button type="button" onclick="addbarcode_product('<?= $r['product_code'] ?>', 'plus')"
+                            <button type="button" onclick="addbarcode_product('<?= $r['rack_number'] ?>', 'plus')"
                               class="btn btn-sm btn-success" title="Increase quantity">
                               + Add
                             </button>
 
-                            <button type="button" onclick="addbarcode_product('<?= $r['product_code'] ?>', 'minus')"
+                            <button type="button" onclick="addbarcode_product('<?= $r['rack_number'] ?>', 'minus')"
                               class="btn btn-sm btn-warning" title="Decrease quantity">
                               - Remove
                             </button>

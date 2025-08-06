@@ -52,7 +52,6 @@
                     <td><?= $r['payment_type'] ?></td>
 
 
-
                     <td class="d-flex">
                       <?php if (@$get_company['sale_interface'] == "barcode") {
                         $cash_sale_url = "cash_salebarcode.php";

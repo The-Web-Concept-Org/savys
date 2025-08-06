@@ -47,7 +47,7 @@ if (!empty($_REQUEST['edit_purchase_id'])) {
                         <div class="row form-group">
                             <!-- Purchase ID -->
                             <div class="col-md-2">
-                                <label>Purchase ID#</label>
+                                <label> ID#</label>
                                 <?php
                                 $result = mysqli_query($dbc, "SHOW TABLE STATUS LIKE 'purchase'");
                                 $data = mysqli_fetch_assoc($result);
@@ -58,7 +58,7 @@ if (!empty($_REQUEST['edit_purchase_id'])) {
 
                             <!-- Purchase Date -->
                             <div class="col-md-2">
-                                <label>Purchase Date</label>
+                                <label> Date</label>
                                 <input type="text" name="purchase_date" id="purchase_date" value="<?= @empty($_REQUEST['edit_purchase_id']) ? date('Y-m-d') : $fetchPurchase['purchase_date'] ?>" readonly class="form-control" placeholder="YYYY-MM-DD">
                             </div>
 
@@ -327,6 +327,7 @@ if (!empty($_REQUEST['edit_purchase_id'])) {
         let currentVal = parseInt($(this).val()) || 0;
 
         if (e.key === 'ArrowUp') {
+
             e.preventDefault();
             $(this).val(currentVal + 5);
         }

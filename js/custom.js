@@ -176,7 +176,13 @@ $(document).ready(function () {
           }).then((result) => {
             if (result.isConfirmed) {
               // Open print page in new tab
-              window.open("print_order.php?id=" + response.order_id + "&type=" + response.type ,"_blank");
+              window.open(
+                "print_order.php?id=" +
+                  response.order_id +
+                  "&type=" +
+                  response.type,
+                "_blank"
+              );
             }
 
             // Either way, reset the form and clear values
@@ -661,7 +667,6 @@ $("#addProductPurchase").on("click", function () {
   var price = $("#get_product_price").val();
   var id = $("#get_product_name :selected").val();
   var code = $("#get_product_code").val();
-
   var rack_id = $("#rack_id").val();
   var product_quantity = parseFloat($("#get_product_quantity").val());
   var pro_type = $("#add_pro_type").val();
@@ -749,7 +754,7 @@ $("#addProductPurchase").on("click", function () {
           <input type="hidden" id="get_rack_number${id}" name="get_rack_number[]" value="${code}-${id}-${rack_id}">
           <td>${code}</td>
           <td>${code}-${id}-${rack_id}</td>
-          <td>${name}</td>
+          <td>${name}</td>  
           <td>${price}</td>
           <td>${product_quantity}</td>
           <td>${total_price}</td>
@@ -934,6 +939,7 @@ $(document).ready(function () {
 function addbarcode_product(code, action_value, quantityToAdd = 1) {
   let new_code = code;
   let rack_id = new_code.split("-").pop();
+  let is_edit = $("#product_order_id").val();
 
   $.ajax({
     url: "php_action/custom_action.php",
@@ -966,16 +972,16 @@ function addbarcode_product(code, action_value, quantityToAdd = 1) {
                   return;
                 }
               }
-
-              if (Currentquantity > parseFloat(res.available_quantity)) {
-                sweeetalert(
-                  "Only " + res.available_quantity + " items in stock!",
-                  "error",
-                  2000
-                );
-                return;
+              if (is_edit == "") {
+                if (Currentquantity > parseFloat(res.available_quantity)) {
+                  sweeetalert(
+                    "Only " + res.available_quantity + " items in stock!",
+                    "error",
+                    2000
+                  );
+                  return;
+                }
               }
-
               $("#product_idN_" + res.product_id).replaceWith(`
                 <tr id="product_idN_${res.product_id}">
                   <input type="hidden"
@@ -997,12 +1003,15 @@ function addbarcode_product(code, action_value, quantityToAdd = 1) {
                      }" name="get_rack_number[]" value="${res.product_code}-${
                 res.product_id
               }-${rack_id}">
+                 <input type="hidden" id="get_rack_id${
+                   (res.product_id)
+                 }" name="get_rack_id[]" value="${rack_id}">
                   <td>${res.product_code.toUpperCase()}</td>
                   <td>${res.product_name.toUpperCase()} (<span class="text-success">${res.brand_name.toUpperCase()}</span>)</td>
                   <td>${Currentquantity}</td>
                   <td>
                     <button type="button" onclick="addbarcode_product('${code}', 'plus', 1)" class="btn btn-sm btn-success" title="Increase quantity">+ Add</button>
-                    <button type="button" onclick="addbarcode_product('${code}', 'minus', 1)" class="btn btn-sm btn-warning" title="Decrease quantity">− Remove</button>
+                                          <button type="button" onclick="addbarcode_product('${code}', 'minus', 1)" class="btn btn-sm btn-warning" title="Decrease quantity">− Remove</button>
                     <button type="button" onclick="removeByid('#product_idN_${
                       res.product_id
                     }')" class="btn btn-sm btn-danger" title="Remove product">🗑 Delete</button>
@@ -1025,6 +1034,9 @@ function addbarcode_product(code, action_value, quantityToAdd = 1) {
                 class="product_ids"
                 name="product_ids[]"
                 value="${res.product_id}">
+                     <input type="hidden" id="get_rack_id${
+                       res.product_id
+                     }" name="get_rack_id[]" value="${rack_id}">F
               <input type="hidden" id="product_quantites_${
                 res.product_id
               }" name="product_quantites[]" value="${quantityToAdd}">
