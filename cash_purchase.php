@@ -41,7 +41,7 @@ if (!empty($_REQUEST['edit_purchase_id'])) {
                 </select>
               </div>
             <?php } else { ?>
-              <input type="hidden" name="warehouse_id" id="warehouse_id" value="<?= $_SESSION['warehouse_id'] ?>">
+              <input type="hidden" name="warehouse_id" id="warehouse_id" value="<?= @$_SESSION['warehouse_id'] ?>">
             <?php } ?>
             <!-- <div class="row d-flex justify-content-end">
               <div class="col-12 col-sm-6 col-md-3 mb-2">
