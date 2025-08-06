@@ -25,6 +25,41 @@ if (!empty($_REQUEST['edit_purchase_id'])) {
           <form action="php_action/custom_action.php" method="POST" id="sale_order_fm">
             <input type="hidden" name="product_purchase_id" value="<?= @empty($_REQUEST['edit_purchase_id']) ? "" : base64_decode($_REQUEST['edit_purchase_id']) ?>">
             <input type="hidden" name="payment_type" id="payment_type" value="cash_purchase">
+            <?php if ($_SESSION['user_role'] == 'admin') { ?>
+              <div class="dropdown-wrapper ml-auto mb-3">
+                <select name="warehouse_id" id="warehouse_id" class="custom-dropdown text-capitalize" required>
+                  <option selected disabled>Select Warehouse</option>
+                  <?php
+                  $warehouse = mysqli_query($dbc, "SELECT * FROM warehouse WHERE warehouse_status = 1");
+                  while ($row = mysqli_fetch_array($warehouse)) {
+                  ?>
+                    <option class="text-capitalize"
+                      value="<?= $row['warehouse_id'] ?>">
+                      <?= $row['warehouse_name'] ?>
+                    </option>
+                  <?php } ?>
+                </select>
+              </div>
+            <?php } else { ?>
+              <input type="hidden" name="warehouse_id" id="warehouse_id" value="<?= @$_SESSION['warehouse_id'] ?>">
+            <?php } ?>
+            <!-- <div class="row d-flex justify-content-end">
+              <div class="col-12 col-sm-6 col-md-3 mb-2">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <label for="get_warehouse_name" class="mb-0">Warehouse</label>
+                </div>
+                <input type="hidden" id="add_pro_type" value="add">
+                <select class="form-control searchableSelect"
+                  id="get_warehouse_name"
+                  name="warehouse_id">
+                  <option value="">Select Warehouse</option>
+                  <option data-location="Tokyo" value="1">Tokyo Warehouse</option>
+                  <option data-location="Osaka" value="2">Osaka Warehouse</option>
+                  <option data-location="Yokohama" value="3">Yokohama Warehouse</option>
+                </select>
+              </div>
+            </div> -->
+
             <div class="row form-group">
               <!-- Purchase ID -->
               <div class="col-md-2">
@@ -98,7 +133,29 @@ if (!empty($_REQUEST['edit_purchase_id'])) {
                   id="get_product_code"
                   class="form-control">
               </div>
+              <div class="col-2 col-md-2 mb-2">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <label for="get_product_name" class="mb-0 ">Rack</label>
+                  <span id="capacity" class="badge badge-info font-weight-bold px-3 py-1" style="font-size: 0.9rem;">Capacity: 0</span>
+                </div>
+                <!-- <label>Rack</label> -->
+                <select class="form-control searchableSelect" onchange="getRackCapacity(this.value)" required name="rack_id" id="rack_id">
+                  <option selected disabled>Select Rack</option>
+                  <?php
+                  if (isset($_SESSION['warehouse_id'])) {
+                    $warehouse_id =  $_SESSION['warehouse_id'];
+                  }
 
+                  $result = mysqli_query($dbc, "SELECT * FROM racks WHERE status=1 AND warehouse_id = '$warehouse_id' ");
+                  while ($row = mysqli_fetch_array($result)) {
+                  ?>
+                    <option <?= (@$fetchPurchase['rack_id'] == $row['rack_id']) ? "selected" : "" ?> value="<?= $row["rack_id"] ?>">
+                      <?= $row["name"] ?>
+                    </option>
+                  <?php } ?>
+                </select>
+
+              </div>
               <div class="col-12 col-sm-6 col-md-3 mb-2">
                 <div class="d-flex justify-content-between align-items-center mb-2">
                   <label for="get_product_name" class="mb-0 ">Products</label>
@@ -125,23 +182,23 @@ if (!empty($_REQUEST['edit_purchase_id'])) {
                 </select>
               </div>
 
-              <div class="col-12 col-sm-6 col-md-2 mb-2">
+              <div class="col-12 col-sm-6 col-md-1 mb-2">
                 <label for="get_product_price">Purchase Rate</label>
                 <input type="number"
                   min="0"
                   class="form-control"
                   id="get_product_price"
-                  placeholder="Enter purchase rate">
+                  placeholder="purchase rate">
               </div>
 
-              <div class="col-12 col-sm-6 col-md-2 mb-2">
+              <div class="col-12 col-sm-6 col-md-1 mb-2">
                 <label for="get_sale_price">Sale Rate</label>
                 <input type="number"
                   min="0"
                   <?= ($_SESSION['user_role'] == "admin") ? "" : "readonly" ?>
                   class="form-control"
                   id="get_sale_price"
-                  placeholder="Enter sale rate">
+                  placeholder="sale rate">
               </div>
 
               <div class="col-12 col-sm-6 col-md-2 mb-2">
@@ -168,6 +225,7 @@ if (!empty($_REQUEST['edit_purchase_id'])) {
                   <thead class="table-bordered">
                     <tr>
                       <th><strong>Product Barcode</strong></th>
+                      <th><strong>Rack Barcode</strong></th>
                       <th><strong>Product Name</strong></th>
                       <th><strong>Unit Price</strong></th>
                       <th><strong>Quantity</strong></th>
@@ -187,15 +245,18 @@ if (!empty($_REQUEST['edit_purchase_id'])) {
                           <input type="hidden" id="product_quantites_<?= $r['product_id'] ?>" name="product_quantites[]" value="<?= $r['quantity'] ?>">
                           <input type="hidden" id="product_rate_<?= $r['product_id'] ?>" name="product_rates[]" value="<?= $r['rate'] ?>">
                           <input type="hidden" id="product_totalrate_<?= $r['product_id'] ?>" name="product_totalrates[]" value="<?= $r['rate'] ?>">
+                          <input type="hidden" id="get_rack_id<?= $r['product_id'] ?>" name="get_rack_id[]" value="<?= $r['rack_id'] ?>">
+                          <input type="hidden" id="get_rack_number<?= $r['product_id'] ?>" name="get_rack_number[]" value="<?= $r['rack_number'] ?>">
 
                           <td><?= ucwords($r['product_code']) ?></td>
+                          <td><?= $r['rack_number'] ?></td>
                           <td><?= ucwords($r['product_name']) ?></td>
                           <td><?= $r['rate'] ?></td>
                           <td><?= $r['quantity'] ?></td>
                           <td><?= (float)$r['rate'] * (float)$r['quantity'] ?></td>
                           <td>
                             <button type="button" onclick="removeByid('#product_idN_<?= $r['product_id'] ?>')" class="fa fa-trash text-danger"></button>
-                            <button type="button" onclick="editByid(<?= $r['product_id'] ?>, '<?= ucwords($r['product_code']) ?>', <?= $r['rate'] ?>, <?= $r['quantity'] ?>)" class="fa fa-edit text-success ml-2"></button>
+                            <button type="button" onclick="editByid(<?= $r['product_id'] ?>, '<?= ucwords($r['product_code']) ?>', <?= $r['rate'] ?>, <?= $r['quantity'] ?> , <?= $r['rack_id'] ?>)" class="fa fa-edit text-success ml-2"></button>
                           </td>
                         </tr>
                     <?php }
@@ -205,28 +266,32 @@ if (!empty($_REQUEST['edit_purchase_id'])) {
                   <tfoot>
                     <!-- Subtotal & Discount -->
                     <tr>
-                      <td colspan="2"></td>
+                      <td colspan="3"></td>
                       <td class="table-bordered align-middle"><strong>Sub Total:</strong></td>
                       <td class="table-bordered align-middle" id="product_total_amount">
                         <?= @$fetchPurchase['total_amount'] ?>
                       </td>
                       <td class="table-bordered align-middle"><strong>Discount:</strong></td>
                       <td class="table-bordered">
-                        <input
-                          type="number"
-                          id="ordered_discount"
-                          name="ordered_discount"
-                          class="form-control form-control-sm"
-                          value="<?= @empty($_REQUEST['edit_order_id']) ? "0" : $fetchPurchase['discount'] ?>"
-                          min="0" max="100"
-                          placeholder="Enter discount %"
-                          onkeyup="getOrderTotal()">
+                        <div class="row">
+                          <div class="col-6"> <input
+                              type="number"
+                              id="ordered_discount"
+                              name="ordered_discount"
+                              class="form-control form-control-sm"
+                              value="<?= @empty($_REQUEST['edit_order_id']) ? "0" : $fetchPurchase['discount'] ?>"
+                              min="0" max="100"
+                              placeholder="Enter discount %"
+                              onkeyup="getOrderTotal()"></div>
+                          <div class="col-6"><input type="number" min="0" max="100" name="purchase_tax" id="purchase_tax" placeholder="Purchase Tax" class="form-control form-control-sm" onkeyup="countTax()" ></div>
+                        </div>
+
                       </td>
                     </tr>
 
                     <!-- Grand Total & Paid -->
                     <tr>
-                      <td colspan="2" class="border-none"></td>
+                      <td colspan="3" class="border-none"></td>
                       <td class="table-bordered align-middle"><strong>Grand Total:</strong></td>
                       <td class="table-bordered align-middle" id="product_grand_total_amount">
                         <?= @$fetchPurchase['grand_total'] ?>
@@ -248,7 +313,7 @@ if (!empty($_REQUEST['edit_purchase_id'])) {
 
                     <!-- Remaining & Account -->
                     <tr>
-                      <td colspan="2" class="border-none"></td>
+                      <td colspan="3" class="border-none"></td>
                       <td class="table-bordered align-middle"><strong>Remaining Amount:</strong></td>
                       <td class="table-bordered">
                         <input
@@ -326,4 +391,15 @@ if (!empty($_REQUEST['edit_purchase_id'])) {
       $(this).val(newVal < 1 ? 1 : newVal); // prevent value from going below 1
     }
   });
+  if (<?= @empty($_REQUEST['edit_purchase_id']) ? "false" : "true" ?>) {
+    setTimeout(function() {
+      $('#warehouse_id').val("<?= @$fetchPurchase['warehouse_id'] ?>").change();
+      // $('#warehouse_id').attr('disabled', 'disabled');
+    }, 500);
+  }
+</script>
+<script>
+  window.onload = function () {
+    countTax();
+  };
 </script>
