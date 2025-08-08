@@ -74,7 +74,7 @@
             <div class="row">
               <div class="col-12 mx-auto h4">
                 <b class="text-center card-text">Purchase Report</b>
-			<button onclick="window.print();"  class="btn btn-admin btn-sm float-right print_btn print_hide">Print Report</button>
+			<!-- <button onclick="window.print();"  class="btn btn-admin btn-sm float-right print_btn print_hide">Print Report</button> -->
            	
              
               </div>
@@ -83,7 +83,7 @@
           </div>
           	<div class="card-body">
 
-    			<table  class="table table-bordered">
+    			<table  class="table table-bordered dataTable">
     				
 			<thead>
 				<tr>
