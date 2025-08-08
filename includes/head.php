@@ -32,7 +32,16 @@
    <script src="js/all.min.js"></script>
    <link rel="stylesheet" href="css/sweetalert2.min.css">
    <link rel="stylesheet" href="css/dataTables.bootstrap4.css">
-   <style type="text/css">
+       <!-- DataTables Buttons CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
+    <style type="text/css">
+      /* Ensure DataTables buttons are visible */
+      .dt-buttons {
+        margin-bottom: 10px;
+      }
+      .dt-button {
+        margin-right: 5px;
+      }
      .btn-admin,
      .bg-admin {
        color: #ffffff;

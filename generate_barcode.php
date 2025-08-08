@@ -119,12 +119,16 @@ if (isset($_REQUEST['id'])) {
 <div class='barcode-label-main'>
     <div class='barcode-label'>
         <div class='barcode'>$barcodeSVG</div>
-        <div class='label-text'>" . htmlspecialchars(ucwords($fetchproduct['rack_number'])) . "</div>
+        <div class='label-text'>" . htmlspecialchars(ucwords(@$fetchproduct['rack_number'])) . "</div>
         <div class='label-row'>
-            <div class='label-text'>Zone: <strong>" . htmlspecialchars(ucwords($fetchRackData['zone'])) . "</strong></div>
-            <div class='label-text'>Rack No: <strong>" . htmlspecialchars(ucwords($fetchRackData['name'])) . "</strong></div>
+            <div class='label-text'>Zone: <strong>" . htmlspecialchars(ucwords(@$fetchRackData['zone'])) . "</strong></div>
+            <div class='label-text'>Rack No: <strong>" . htmlspecialchars(ucwords(@$fetchRackData['name'])) . "</strong></div>
         </div>
-        <div class='label-text product-name'>" . htmlspecialchars(ucwords($fetchproductData['product_name'])) . "</div>
+        <div class='label-row'>
+            <div class='label-text m-0'>Color: <strong>" . htmlspecialchars(ucwords(@$fetchproductData['color'])) . "</strong></div>
+            <div class='label-text m-0'>Size: <strong>" . htmlspecialchars(ucwords(@$fetchproductData['size'])) . "</strong></div>
+        </div>
+        <div class='label-text product-name'>" . htmlspecialchars(ucwords(@$fetchproductData['product_name'])) . "</div>
         <div class='brand'>Savys</div>
     </div>
 </div>
@@ -133,3 +137,9 @@ if (isset($_REQUEST['id'])) {
 ?>
 
 <?php include_once 'includes/foot.php'; ?>
+<script>
+        window.print();
+        setTimeout(function() {
+            window.close();
+        }, 1000);
+    </script>]

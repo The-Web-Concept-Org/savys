@@ -458,6 +458,7 @@ $(document).ready(function () {
 
         // Show stock
         $("#instockQty").html("In Stock: " + response.qty);
+        $()
 
         // Set price and quantity limits
         if (payment_type == "cash_in_hand" || payment_type == "credit_sale") {
@@ -465,7 +466,7 @@ $(document).ready(function () {
           $("#get_product_quantity").attr("max", response.qty);
           $("#addProductPurchase").prop("disabled", response.qty <= 0);
         } else {
-          $("#get_product_price").val(response.purchase_rate);
+          $("#get_product_price").val(response.wholsale_rate);
           $("#get_sale_price").val(response.current_rate);
         }
       },
@@ -574,7 +575,7 @@ $("#get_product_name").on("change", function () {
           $("#addProductPurchase").prop("disabled", true);
         }
       } else {
-        $("#get_product_price").val(response.purchase_rate);
+        $("#get_product_price").val(response.wholsale_rate);
         $("#get_sale_price").val(response.current_rate);
       }
     },

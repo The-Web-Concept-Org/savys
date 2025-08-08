@@ -233,8 +233,8 @@ if (!empty($_REQUEST['edit_purchase_id'])) {
                       <td class="table-bordered"> <strong>Discount :</strong></td>
                       <td class="table-bordered" id="getDiscount">
                         <div class="row">
-                          <div class="col-6"> <input onkeyup="getOrderTotal()" type="number" id="ordered_discount" class="form-control form-control-sm" value="<?= @empty($_REQUEST['edit_order_id']) ? "0" : $fetchPurchase['discount'] ?>" min="0" max="100" name="ordered_discount"></div>
-                          <div class="col-6"><input type="number" min="0" max="100" name="purchase_tax" id="purchase_tax" placeholder="Purchase Tax" class="form-control form-control-sm" onkeyup="countTax()"></div>
+                          <div class="col-12"> <input onkeyup="getOrderTotal()" type="number" id="ordered_discount" class="form-control form-control-sm" value="<?= @empty($_REQUEST['edit_order_id']) ? "0" : $fetchPurchase['discount'] ?>" min="0" max="100" name="ordered_discount"></div>
+                      
                         </div>
                       </td>
                     </tr>

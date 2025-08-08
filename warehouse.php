@@ -135,7 +135,7 @@ if (@$getCustomer) {
                                                         <?php if (@$userPrivileges['nav_delete'] == 1 || $fetchedUserRole == "admin"): ?>
                                                             <form action="warehouse.php" method="POST">
                                                                 <input type="hidden" name="warehouse_del_id" value="<?= $row['warehouse_id'] ?>">
-                                                                <button type="submit" class="btn btn-admin2 btn-sm m-1">Delete</button>
+                                                                <button type="submit" class="btn btn-admin2 btn-sm m-1" onclick="deleteData('warehouse', 'warehouse_id', <?= $row['warehouse_id'] ?>, 'warehouse.php')">Delete</button>
                                                             </form>
                                                         <?php endif ?>
 

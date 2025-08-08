@@ -274,7 +274,7 @@ if (!empty($_REQUEST['edit_purchase_id'])) {
                       <td class="table-bordered align-middle"><strong>Discount:</strong></td>
                       <td class="table-bordered">
                         <div class="row">
-                          <div class="col-6"> <input
+                          <div class="col-12"> <input
                               type="number"
                               id="ordered_discount"
                               name="ordered_discount"
@@ -283,7 +283,6 @@ if (!empty($_REQUEST['edit_purchase_id'])) {
                               min="0" max="100"
                               placeholder="Enter discount %"
                               onkeyup="getOrderTotal()"></div>
-                          <div class="col-6"><input type="number" min="0" max="100" name="purchase_tax" id="purchase_tax" placeholder="Purchase Tax" class="form-control form-control-sm" onkeyup="countTax()" ></div>
                         </div>
 
                       </td>

@@ -312,7 +312,20 @@
     <script src='js/quill.min.js'></script>
        <script src='js/jquery.dataTables.min.js'></script>
     <script src='js/dataTables.bootstrap4.min.js'></script>
+    <!-- DataTables Buttons JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.bootstrap4.min.js"></script>
+    <!-- Ensure DataTables Buttons are loaded -->
+    <script>
+      console.log("DataTables Buttons loaded:", typeof $.fn.dataTable.Buttons);
+      if (typeof $.fn.dataTable.Buttons === 'undefined') {
+        console.error("DataTables Buttons extension failed to load!");
+      } else {
+        console.log("DataTables Buttons extension loaded successfully");
+      }
+    </script>
     <script src="js/apps.js"></script>
     <script src="js/custom.js"></script>
-      <script src="js/panel.js"></script>
-
+    <script src="js/panel.js"></script>

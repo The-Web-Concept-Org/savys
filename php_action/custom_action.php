@@ -395,6 +395,10 @@ if (!empty($_REQUEST['action']) and $_REQUEST['action'] == "product_module") {
 		'width' => @$_REQUEST['width'],
 		'height' => @$_REQUEST['height'],
 		'uom' => @$_REQUEST['uom'],
+		'color' => @$_REQUEST['color'],
+		'size' => @$_REQUEST['size'],
+		'pur_rate' => @$_REQUEST['purchase_rate'],
+		'wholsale_rate' => @$_REQUEST['wholesale_rate'],
 	];
 	if ($_REQUEST['product_id'] == "") {
 
@@ -586,6 +590,10 @@ if (isset($_GET['searchTerm'])) {
 if (isset($_REQUEST['getPrice'])) {
 	if ($_REQUEST['type'] == "product") {
 		$record = fetchRecord($dbc, "product", "product_id", $_REQUEST['getPrice']);
+		// Here should be fetch from inventoiry sum of all records where product_id is selected
+		$inventory = mysqli_fetch_assoc(mysqli_query($dbc, "SELECT SUM(quantity_instock) AS total_quantity FROM inventory WHERE product_id='" . $_REQUEST['getPrice'] . "' "));
+		$record['quantity_instock'] = $inventory['total_quantity'];
+
 	} else {
 		$record = fetchRecord($dbc, "product", "product_code", $_REQUEST['getPrice']);
 	}
@@ -605,7 +613,7 @@ if (isset($_REQUEST['getPrice'])) {
 
 	$response = [
 		"current_rate" => @$record['current_rate'],
-		"purchase_rate" => @$record['purchase_rate'],
+		"wholsale_rate" => @$record['wholsale_rate'],
 		"qty" => @(float)$record['quantity_instock'],
 		"sts" => "success",
 		"type" => @$_REQUEST['credit_sale_type'],
@@ -1140,7 +1148,6 @@ if (isset($_REQUEST['cash_purchase_supplier'])) {
 			'payment_type' => $_REQUEST['payment_type'],
 			'warehouse_id' => @$_REQUEST['warehouse_id'],
 			'user_id' => $_SESSION['user_id'],
-			'purchase_tax' => @$_REQUEST['purchase_tax'],
 		];
 
 		if ($_REQUEST['product_purchase_id'] == "") {
