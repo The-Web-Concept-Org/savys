@@ -1,9 +1,9 @@
 <?php 
 
 //session_start();
-include_once "db_connect.php";
-include_once "includes/functions.php";
-include_once "includes/code.php";
+include_once __DIR__ . '/../php_action/db_connect.php';
+include_once __DIR__ . '/../includes/functions.php';
+include_once __DIR__ . '/../includes/code.php';
   $getpage = basename($_SERVER['REQUEST_URI']);
 
   if(!isset($_SESSION['userId']) AND $getpage!="index.php") {

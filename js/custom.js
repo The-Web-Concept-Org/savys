@@ -458,6 +458,7 @@ $(document).ready(function () {
 
         // Show stock
         $("#instockQty").html("In Stock: " + response.qty);
+        $()
 
         // Set price and quantity limits
         if (payment_type == "cash_in_hand" || payment_type == "credit_sale") {
@@ -465,7 +466,7 @@ $(document).ready(function () {
           $("#get_product_quantity").attr("max", response.qty);
           $("#addProductPurchase").prop("disabled", response.qty <= 0);
         } else {
-          $("#get_product_price").val(response.purchase_rate);
+          $("#get_product_price").val(response.wholsale_rate);
           $("#get_sale_price").val(response.current_rate);
         }
       },
@@ -574,7 +575,7 @@ $("#get_product_name").on("change", function () {
           $("#addProductPurchase").prop("disabled", true);
         }
       } else {
-        $("#get_product_price").val(response.purchase_rate);
+        $("#get_product_price").val(response.wholsale_rate);
         $("#get_sale_price").val(response.current_rate);
       }
     },
@@ -889,38 +890,67 @@ $(document).ready(function () {
       event.preventDefault();
       let barcode = $(this).val().trim();
       if (barcode !== "") {
-        // Show quantity input popup
-        Swal.fire({
-          title: "Enter Quantity",
-          input: "number",
-          inputAttributes: {
-            min: 1,
+        // First fetch product details to get available stock
+        $.ajax({
+          url: "php_action/custom_action.php",
+          type: "post",
+          data: {
+            getProductDetailsBycode: barcode,
           },
-          inputValue: 1,
-          showCancelButton: true,
-          confirmButtonText: "Add Product",
-          cancelButtonText: "Cancel",
-          inputValidator: (value) => {
-            if (!value || value < 1) {
-              return "Please enter a valid quantity (1 or more)";
+          dataType: "json",
+          success: function (res) {
+            if (res.quantity_instock > 0) {
+              // Show quantity input popup with stock validation
+              Swal.fire({
+                title: "Enter Quantity",
+                html: `Available in stock: <strong>${res.available_quantity}</strong>`,
+                input: "number",
+                inputAttributes: {
+                  min: 1,
+                  max: res.available_quantity,
+                },
+                inputValue: 1,
+                showCancelButton: true,
+                confirmButtonText: "Add Product",
+                cancelButtonText: "Cancel",
+                inputValidator: (value) => {
+                  if (!value || value < 1) {
+                    return "Please enter a valid quantity (1 or more)";
+                  }
+                  if (parseInt(value) > res.available_quantity) {
+                    return `Only ${res.available_quantity} items available in stock!`;
+                  }
+                },
+                didOpen: () => {
+                  const input = Swal.getInput();
+                  if (input) {
+                    input.focus();
+                    input.select(); // This selects the whole value
+                  }
+                },
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  const quantity = parseInt(result.value);
+                  addbarcode_product(barcode, "plus", quantity); // pass quantity
+                  $("#barcode_product").val(""); // Clear input
+                  setTimeout(() => {
+                    $("#barcode_product").focus();
+                  }, 100);
+                } else {
+                  setTimeout(() => {
+                    $("#barcode_product").focus();
+                  }, 100);
+                }
+              });
+            } else {
+              sweeetalert("This product is out of stock", "error", 1500);
+              setTimeout(() => {
+                $("#barcode_product").focus();
+              }, 100);
             }
           },
-          didOpen: () => {
-            const input = Swal.getInput();
-            if (input) {
-              input.focus();
-              input.select(); // This selects the whole value
-            }
-          },
-        }).then((result) => {
-          if (result.isConfirmed) {
-            const quantity = parseInt(result.value);
-            addbarcode_product(barcode, "plus", quantity); // pass quantity
-            $("#barcode_product").val(""); // Clear input
-            setTimeout(() => {
-              $("#barcode_product").focus();
-            }, 100);
-          } else {
+          error: function() {
+            sweeetalert("Product not found or error occurred", "error", 1500);
             setTimeout(() => {
               $("#barcode_product").focus();
             }, 100);
@@ -972,15 +1002,14 @@ function addbarcode_product(code, action_value, quantityToAdd = 1) {
                   return;
                 }
               }
-              if (is_edit == "") {
-                if (Currentquantity > parseFloat(res.available_quantity)) {
-                  sweeetalert(
-                    "Only " + res.available_quantity + " items in stock!",
-                    "error",
-                    2000
-                  );
-                  return;
-                }
+              // Always check available quantity regardless of edit mode
+              if (Currentquantity > parseFloat(res.available_quantity)) {
+                sweeetalert(
+                  "Only " + res.available_quantity + " items in stock!",
+                  "error",
+                  2000
+                );
+                return;
               }
               $("#product_idN_" + res.product_id).replaceWith(`
                 <tr id="product_idN_${res.product_id}">
@@ -1417,6 +1446,11 @@ $(document).ready(function () {
         if (data.status === "success") {
           $("#rack_id").html(data.options);
           $("#rack_id").change();
+          // Here I Want to show first rack selected 
+          let firstValue = $("#rack_id option:eq(1)").val();
+
+          // Set it as selected and trigger change
+          $("#rack_id").val(firstValue).change();
         } else {
           $("#rack_id").html('<option value="">No racks found</option>');
         }

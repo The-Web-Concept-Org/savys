@@ -3,7 +3,18 @@
 // var view = url.searchParams.get("edit_quotation_id");
 
 $(document).ready(function () {
-  $(".dataTable").DataTable({
+  console.log("Initializing DataTables with Excel export...");
+  
+  // Small delay to ensure all DataTables extensions are loaded
+  setTimeout(function() {
+    console.log("DataTables Buttons available:", typeof $.fn.dataTable.Buttons);
+    console.log("Found dataTable elements:", $(".dataTable").length);
+    console.log("jQuery version:", $.fn.jquery);
+    console.log("DataTables version:", $.fn.dataTable.version);
+    console.log("Buttons extension loaded:", typeof $.fn.dataTable.Buttons !== 'undefined');
+    
+    // Initialize DataTables with Excel export for all dataTable classes (excluding purchase table)
+    $(".dataTable").not("#view_purchase_tb").DataTable({
     autoWidth: true,
     lengthMenu: [
       [10, 20, 50, -1],
@@ -12,7 +23,24 @@ $(document).ready(function () {
     order: [
       [0, "desc"]
     ],
+    dom: 'Bfrtip',
+    buttons: [
+      {
+        extend: 'excel',
+        text: 'Export to Excel',
+        className: 'btn btn-success btn-sm',
+        exportOptions: {
+          columns: ':visible'
+        }
+      }
+    ],
+    pageLength: 10,
+    responsive: true
   });
+  
+
+  
+  // Initialize DataTables with Excel export for credit_order class
   $(".credit_order").DataTable({
     autoWidth: true,
     lengthMenu: [
@@ -22,6 +50,14 @@ $(document).ready(function () {
     order: [
       [6, "asc"]
     ],
+    dom: 'Bfrtip',
+    buttons: [
+      {
+        extend: 'excel',
+        text: 'Export to Excel',
+        className: 'btn btn-success btn-sm'
+      }
+    ]
   });
   $(".searchableSelect").select2({
     theme: "bootstrap4",
@@ -54,44 +90,60 @@ $(document).ready(function () {
       });
     },
   });
+  }); // Close setTimeout
 }); //end of jquery ready
 
 function deleteData(table, fld, id, url) {
-  var x = confirm(" Do you want to ID# : " + id);
-
-  if (x == true) {
-    $.ajax({
-      url: "php_action/ajax_deleteData.php",
-
-      type: "post",
-
-      data: {
-        table: table,
-        fld: fld,
-        delete_id: id,
-        url: url
-      },
-
-      dataType: "json",
-
-      success: function (response) {
-        $(".response").html(
-          '<div class="alert alert-' +
-          response.sts +
-          ' text-center">' +
-          response.msg +
-          "</div>"
-        );
-
-        setTimeout(function () {
-          window.location = url;
-
-          $(".response").html("");
-        }, 1500);
-      },
-    });
-  }
-}
+      console.log("deleteData called with:", {table, fld, id, url});
+      
+      $.ajax({
+        url: "php_action/ajax_deleteData.php",
+        type: "post",
+        data: {
+          table: table,
+          fld: fld,
+          delete_id: id,
+          url: url
+        },
+        dataType: "json",
+        success: function (response) {
+          console.log("Response received:", response);
+          
+                     if (response.sts === "success") {
+             console.log("Showing success message");
+             Swal.fire({
+               title: "Deleted!",
+               text: response.msg,
+               icon: "success",
+               confirmButtonText: "OK",
+               timer: 3000,
+               timerProgressBar: true
+             }).then((result) => {
+               setTimeout(() => {
+                 window.location = url;
+               }, 1000);
+             });
+           } else {
+            console.log("Showing error message");
+            Swal.fire({
+              title: "Error!",
+              text: response.msg || "Something went wrong.",
+              icon: "error",
+              confirmButtonText: "OK"
+            });
+          }
+        },
+        error: function (xhr, status, error) {
+          console.log("Ajax error:", {xhr, status, error});
+          Swal.fire({
+            title: "Error!",
+            text: "Server request failed. Try again.",
+            icon: "error",
+            confirmButtonText: "OK"
+          });
+        }
+      });
+    }
 $("#add_nav_menus_fm").on("submit", function (e) {
   e.preventDefault();
   e.stopPropagation();

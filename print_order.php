@@ -131,6 +131,9 @@ for ($i = 0; $i < $print; $i++) {
                                             <th class="text-right">PRICE</th>
                                             <th class="text-right">QUANTITY</th>
                                             <th class="text-right">TOTAL</th>
+                                            <?php if ($_REQUEST['type'] == "purchase"): ?>
+                                                <th class="text-right">Purchase Tax</th>
+                                            <?php endif; ?>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -159,6 +162,11 @@ for ($i = 0; $i < $print; $i++) {
                                                 <td class="unit">
                                                     <h3><?= $r['rate'] * $r['quantity'] ?></h3>
                                                 </td>
+                                                <?php if ($_REQUEST['type'] == "purchase"): ?>
+                                                    <td class="unit">
+                                                        <h3><?= @$r['purchase_tax'] ?></h3>
+                                                    </td>
+                                                <?php endif; ?>
                                             </tr>
 
                                         <?php

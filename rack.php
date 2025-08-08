@@ -34,14 +34,14 @@ if (@$getCustomer) {
                                         </div>
                                         <label for="clientContact" class="col-sm-2 control-label">Rack Zone</label>
                                         <div class="col-sm-4">
-                                            <input type="text" class="form-control" id="rack_zone" name="rack_zone" placeholder="Name Here..." autocomplete="off" required value="<?= @$fetchusers['zone'] ?>" />
+                                            <input type="text" class="form-control" id="rack_zone" name="rack_zone" placeholder="Zone Here..." autocomplete="off" required value="<?= @$fetchusers['zone'] ?>" />
                                         </div>
 
                                     </div> <!--/form-group-->
                                     <div class="form-group row">
                                         <label for="clientContact" class="col-sm-2 control-label">Rack Capacity</label>
                                         <div class="col-sm-4">
-                                            <input type="number" min="1" class="form-control" id="rack_capacity" name="rack_capacity" placeholder="Name Here..." autocomplete="off" required value="<?= @$fetchusers['capacity'] ?>" />
+                                            <input type="text"  class="form-control" id="rack_capacity" name="rack_capacity" placeholder="Capacity Here..." autocomplete="off" required value="<?= @$fetchusers['capacity'] ?>" />
                                         </div>
 
                                         <label for="warehouse_id" class="col-sm-2 control-label">Warehouse </label>
@@ -140,7 +140,7 @@ if (@$getCustomer) {
                                                         <?php if (@$userPrivileges['nav_delete'] == 1 || $fetchedUserRole == "admin"): ?>
                                                             <form action="rack.php" method="POST">
                                                                 <input type="hidden" name="rack_del_id" value="<?= $row['rack_id'] ?>">
-                                                                <button type="submit" class="btn btn-admin2 btn-sm m-1">Delete</button>
+                                                                <button type="submit" class="btn btn-admin2 btn-sm m-1" onclick="deleteData('racks', 'rack_id', <?= $row['rack_id'] ?>, 'rack.php')">Delete</button>
                                                             </form>
                                                         <?php endif ?>
 

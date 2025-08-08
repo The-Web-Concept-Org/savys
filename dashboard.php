@@ -116,38 +116,38 @@ if (isset($_REQUEST['orderdate']) && $_REQUEST['orderdate'] !== '') {
                 if ($selectedOption == 'today') {
                   // Handle the case for Today
                   $selectedOption = 'Today';
-                  echo "<h4 class='my-0 font-weight-bold mx-2'>From</h4> <h5 class='my-0'> $selectedOption</h5>";
+                  echo "<h4 class='my-0 font-weight-bold mx-2'>From</h4> <h5 class='my-0  font-weight-bold'> $selectedOption</h5>";
                 } elseif ($selectedOption == 'yesterday') {
                   // Handle the case for Yesterday
                   $selectedOption = 'Yesterday';
-                  echo "<h4 class='my-0 font-weight-bold mx-2'>From</h4> <h5 class='my-0'> $selectedOption</h5>";
+                  echo "<h4 class='my-0 font-weight-bold mx-2'>From</h4> <h5 class='my-0  font-weight-bold'> $selectedOption</h5>";
                 } elseif ($selectedOption == 'last7days') {
                   // Handle the case for Last 7 Days
                   $selectedOption = 'Last 7 Days';
-                  echo "<h4 class='my-0 font-weight-bold mx-2'>From</h4> <h5 class='my-0'> $selectedOption</h5>";
+                  echo "<h4 class='my-0 font-weight-bold mx-2'>From</h4> <h5 class='my-0  font-weight-bold'> $selectedOption</h5>";
                 } elseif ($selectedOption == 'last30days') {
                   // Handle the case for Last 30 Days
                   $selectedOption = 'Last 30 Days';
-                  echo "<h4 class='my-0 font-weight-bold mx-2'>From</h4> <h5 class='my-0'> $selectedOption</h5>";
+                  echo "<h4 class='my-0 font-weight-bold mx-2'>From</h4> <h5 class='my-0  font-weight-bold'> $selectedOption</h5>";
                 } elseif ($selectedOption == 'thismonth') {
                   // Handle the case for This Month
                   $selectedOption = 'This Month';
-                  echo "<h4 class='my-0 font-weight-bold mx-2'>From</h4> <h5 class='my-0'> $selectedOption</h5>";
+                  echo "<h4 class='my-0 font-weight-bold mx-2'>From</h4> <h5 class='my-0  font-weight-bold'> $selectedOption</h5>";
                 } elseif ($selectedOption == 'lastmonth') {
                   // Handle the case for Last Month
                   $selectedOption = 'Last Month';
-                  echo "<h4 class='my-0 font-weight-bold mx-2'>From</h4> <h5 class='my-0'> $selectedOption</h5>";
+                  echo "<h4 class='my-0 font-weight-bold mx-2'>From</h4> <h5 class='my-0  font-weight-bold'> $selectedOption</h5>";
                 }
               } elseif (isset($_REQUEST['start_date']) && $_REQUEST['start_date'] !== '' && empty($_REQUEST['end_date'])) {
                 $start_date = $_REQUEST['start_date'];
-                echo "<h4 class='my-0 font-weight-bold mx-2'>From</h4> <h5 class='my-0'> $start_date</h5>";
+                echo "<h4 class='my-0 font-weight-bold mx-2'>From</h4> <h5 class='my-0  font-weight-bold'> $start_date</h5>";
               } elseif (isset($_REQUEST['start_date']) && $_REQUEST['start_date'] !== '' && isset($_REQUEST['end_date'])) {
                 $start_date = $_REQUEST['start_date'];
                 $end_date = $_REQUEST['end_date'];
-                echo "<h4 class='my-0 font-weight-bold mx-2'>From</h4> <h5 class='my-0'>$start_date <h4 class='my-0 font-weight-bold mx-2'>To</h4> $end_date</h5>";
+                echo "<h4 class='my-0 font-weight-bold mx-2'>From</h4> <h5 class='my-0  font-weight-bold'>$start_date <h4 class='my-0 font-weight-bold mx-2'>To</h4> $end_date</h5>";
               } else {
                 $start_date = date('Y-m-d');
-                echo "<h4 class='my-0 font-weight-bold mx-2'>From</h4> <h5 class='my-0'>$start_date</h5>";
+                echo "<h4 class='my-0 font-weight-bold mx-2'>From</h4> <h5 class='my-0  font-weight-bold'>$start_date</h5>";
               }
               ?>
             </div>
