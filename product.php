@@ -173,7 +173,7 @@ if (isset($_REQUEST['duplicate_product_id'])) {
                       name="purchase_tax" autocomplete="off" required value="<?= @$fetchproduct['purchase_tax'] ?? @$duplicate_product['purchase_tax'] ?>">
                   </div>
                   <div class="col-md-2 mb-3">
-                    <label>Rate</label>
+                    <label>Sale Rate</label>
                     <input type="number" min="0" step="0.0001" class="form-control" id="current_rate" placeholder="Rate"
                       name="current_rate" autocomplete="off" required value="<?= @$fetchproduct['current_rate'] ?? @$duplicate_product['current_rate'] ?>">
                   </div>

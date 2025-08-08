@@ -890,38 +890,67 @@ $(document).ready(function () {
       event.preventDefault();
       let barcode = $(this).val().trim();
       if (barcode !== "") {
-        // Show quantity input popup
-        Swal.fire({
-          title: "Enter Quantity",
-          input: "number",
-          inputAttributes: {
-            min: 1,
+        // First fetch product details to get available stock
+        $.ajax({
+          url: "php_action/custom_action.php",
+          type: "post",
+          data: {
+            getProductDetailsBycode: barcode,
           },
-          inputValue: 1,
-          showCancelButton: true,
-          confirmButtonText: "Add Product",
-          cancelButtonText: "Cancel",
-          inputValidator: (value) => {
-            if (!value || value < 1) {
-              return "Please enter a valid quantity (1 or more)";
+          dataType: "json",
+          success: function (res) {
+            if (res.quantity_instock > 0) {
+              // Show quantity input popup with stock validation
+              Swal.fire({
+                title: "Enter Quantity",
+                html: `Available in stock: <strong>${res.available_quantity}</strong>`,
+                input: "number",
+                inputAttributes: {
+                  min: 1,
+                  max: res.available_quantity,
+                },
+                inputValue: 1,
+                showCancelButton: true,
+                confirmButtonText: "Add Product",
+                cancelButtonText: "Cancel",
+                inputValidator: (value) => {
+                  if (!value || value < 1) {
+                    return "Please enter a valid quantity (1 or more)";
+                  }
+                  if (parseInt(value) > res.available_quantity) {
+                    return `Only ${res.available_quantity} items available in stock!`;
+                  }
+                },
+                didOpen: () => {
+                  const input = Swal.getInput();
+                  if (input) {
+                    input.focus();
+                    input.select(); // This selects the whole value
+                  }
+                },
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  const quantity = parseInt(result.value);
+                  addbarcode_product(barcode, "plus", quantity); // pass quantity
+                  $("#barcode_product").val(""); // Clear input
+                  setTimeout(() => {
+                    $("#barcode_product").focus();
+                  }, 100);
+                } else {
+                  setTimeout(() => {
+                    $("#barcode_product").focus();
+                  }, 100);
+                }
+              });
+            } else {
+              sweeetalert("This product is out of stock", "error", 1500);
+              setTimeout(() => {
+                $("#barcode_product").focus();
+              }, 100);
             }
           },
-          didOpen: () => {
-            const input = Swal.getInput();
-            if (input) {
-              input.focus();
-              input.select(); // This selects the whole value
-            }
-          },
-        }).then((result) => {
-          if (result.isConfirmed) {
-            const quantity = parseInt(result.value);
-            addbarcode_product(barcode, "plus", quantity); // pass quantity
-            $("#barcode_product").val(""); // Clear input
-            setTimeout(() => {
-              $("#barcode_product").focus();
-            }, 100);
-          } else {
+          error: function() {
+            sweeetalert("Product not found or error occurred", "error", 1500);
             setTimeout(() => {
               $("#barcode_product").focus();
             }, 100);
@@ -973,15 +1002,14 @@ function addbarcode_product(code, action_value, quantityToAdd = 1) {
                   return;
                 }
               }
-              if (is_edit == "") {
-                if (Currentquantity > parseFloat(res.available_quantity)) {
-                  sweeetalert(
-                    "Only " + res.available_quantity + " items in stock!",
-                    "error",
-                    2000
-                  );
-                  return;
-                }
+              // Always check available quantity regardless of edit mode
+              if (Currentquantity > parseFloat(res.available_quantity)) {
+                sweeetalert(
+                  "Only " + res.available_quantity + " items in stock!",
+                  "error",
+                  2000
+                );
+                return;
               }
               $("#product_idN_" + res.product_id).replaceWith(`
                 <tr id="product_idN_${res.product_id}">
