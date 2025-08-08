@@ -1418,6 +1418,11 @@ $(document).ready(function () {
         if (data.status === "success") {
           $("#rack_id").html(data.options);
           $("#rack_id").change();
+          // Here I Want to show first rack selected 
+          let firstValue = $("#rack_id option:eq(1)").val();
+
+          // Set it as selected and trigger change
+          $("#rack_id").val(firstValue).change();
         } else {
           $("#rack_id").html('<option value="">No racks found</option>');
         }
