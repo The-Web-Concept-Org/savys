@@ -70,9 +70,14 @@ if (isset($_REQUEST['duplicate_product_id'])) {
                   <div class="col-md-3 mb-3">
                     <label>Product Name Urdu</label>
                     <input type="text" class="form-control" id="product_name_urdu" placeholder="Product Name Urdu"
-                      name="product_name_urdu" autocomplete="off" required
-                      value="<?= @$fetchproduct['product_name_urdu'] ?? @$duplicate_product['product_name_urdu'] ?>">
+                      name="product_name_urdu" autocomplete="off"
+                      value="<?= !empty($fetchproduct['product_name_urdu'])
+                                ? $fetchproduct['product_name_urdu']
+                                : (!empty($duplicate_product['product_name_urdu'])
+                                  ? $duplicate_product['product_name_urdu']
+                                  : '') ?>">
                   </div>
+
                 </div>
 
                 <div class="form-group row">
@@ -83,7 +88,7 @@ if (isset($_REQUEST['duplicate_product_id'])) {
                       <?php
                       $result = mysqli_query($dbc, "SELECT * FROM brands");
                       while ($row = mysqli_fetch_array($result)) {
-                        ?>
+                      ?>
                         <option <?= @$fetchproduct['brand_id'] == $row["brand_id"] || @$duplicate_product['brand_id'] == $row["brand_id"] ? "selected" : "" ?>
                           value="<?= $row["brand_id"] ?>">
                           <?= ucwords($row["brand_name"]) ?>
@@ -106,7 +111,7 @@ if (isset($_REQUEST['duplicate_product_id'])) {
                       <?php
                       $result = mysqli_query($dbc, "SELECT * FROM categories ORDER BY categories_name ASC");
                       while ($row = mysqli_fetch_array($result)) {
-                        ?>
+                      ?>
                         <option data-price="<?= $row["category_price"] ?>"
                           <?= @$fetchproduct['category_id'] == $row["categories_id"] || @$duplicate_product['category_id'] == $row["categories_id"] ? "selected" : "" ?>
                           value="<?= $row["categories_id"] ?>">
@@ -180,7 +185,7 @@ if (isset($_REQUEST['duplicate_product_id'])) {
 
                   <div class="col-md-2 mb-3">
                     <label>Wholesale Rate (Calculated)</label>
-                    <input type="number" min="0" step="0.0001" class="form-control" id="wholesale_rate" placeholder="Wholesale Rate" 
+                    <input type="number" min="0" step="0.0001" class="form-control" id="wholesale_rate" placeholder="Wholesale Rate"
                       name="wholesale_rate" autocomplete="off" readonly
                       value="<?= @$fetchproduct['wholsale_rate'] ?? @$duplicate_product['wholsale_rate'] ?>">
                   </div>
@@ -190,15 +195,15 @@ if (isset($_REQUEST['duplicate_product_id'])) {
                       value="<?= empty($fetchproduct) ? 10 : $fetchproduct['alert_at'] ?? @$duplicate_product['alert_at'] ?>" id="alert_at"
                       placeholder="Product Stock Alert" name="alert_at" autocomplete="off">
                   </div>
-  
+
                   <div class="col-md-2 mb-3">
                     <label>Product Image</label>
-                    <input type="file" class="form-control" id="product_image" name="product_image" accept="image/*" value="<?= @$fetchproduct['product_image'] ?? @$duplicate_product['product_image'] ?>"> 
+                    <input type="file" class="form-control" id="product_image" name="product_image" accept="image/*" value="<?= @$fetchproduct['product_image'] ?? @$duplicate_product['product_image'] ?>">
                   </div>
-             
+
                 </div>
 
-         
+
                 <div class="form-group row">
                   <div class="col-md-6 mb-3">
                     <label>Product Description</label>
@@ -245,7 +250,7 @@ if (isset($_REQUEST['duplicate_product_id'])) {
                     @$brandFetched = fetchRecord($dbc, "brands", "brand_id", $r['brand_id']);
                     @$categoryFetched = fetchRecord($dbc, "categories", "categories_id", $r['category_id']);
                     $c++;
-                    ?>
+                  ?>
                     <tr>
                       <td><?= $c ?></td>
                       <td>
@@ -294,10 +299,10 @@ if (isset($_REQUEST['duplicate_product_id'])) {
                         <a href="print_barcode.php?id=<?= base64_encode($r['product_id']) ?>"
                           class="btn btn-primary btn-sm m-1 d-inline-block">Barcode</a>
 
-                          <form action="product.php?act=add" method="POST" class="d-inline-block">
-                            <input type="hidden" name="duplicate_product_id" value="<?= base64_encode($r['product_id']) ?>">
-                            <button type="submit" class="btn btn-admin btn-sm m-1">Duplicate</button>
-                          </form>
+                        <form action="product.php?act=add" method="POST" class="d-inline-block">
+                          <input type="hidden" name="duplicate_product_id" value="<?= base64_encode($r['product_id']) ?>">
+                          <button type="submit" class="btn btn-admin btn-sm m-1">Duplicate</button>
+                        </form>
                       </td>
                     </tr>
                   <?php } ?>
@@ -329,7 +334,7 @@ if (isset($_REQUEST['duplicate_product_id'])) {
   var typingTimer; // Global timer identifier
   var doneTypingInterval = 1000; // 1 second
 
-  document.addEventListener("keypress", function (e) {
+  document.addEventListener("keypress", function(e) {
     var activeId = document.activeElement.id;
     var input = document.querySelector("#product_code");
     var product_name = document.querySelector("#product_name");
@@ -352,10 +357,10 @@ if (isset($_REQUEST['duplicate_product_id'])) {
   function calculateWholesaleRate() {
     const purchaseRate = parseFloat(document.getElementById('purchase_rate').value) || 0;
     const purchaseTax = parseFloat(document.getElementById('purchase_tax').value) || 0;
-    
+
     const taxAmount = (purchaseRate * purchaseTax) / 100;
     const wholesaleRate = purchaseRate + taxAmount;
-    
+
     document.getElementById('wholesale_rate').value = wholesaleRate.toFixed(4);
   }
 
@@ -363,17 +368,17 @@ if (isset($_REQUEST['duplicate_product_id'])) {
   document.addEventListener('DOMContentLoaded', function() {
     const purchaseRateInput = document.getElementById('purchase_rate');
     const purchaseTaxInput = document.getElementById('purchase_tax');
-    
+
     if (purchaseRateInput) {
       purchaseRateInput.addEventListener('input', calculateWholesaleRate);
       purchaseRateInput.addEventListener('change', calculateWholesaleRate);
     }
-    
+
     if (purchaseTaxInput) {
       purchaseTaxInput.addEventListener('input', calculateWholesaleRate);
       purchaseTaxInput.addEventListener('change', calculateWholesaleRate);
     }
-    
+
     // Calculate initial wholesale rate on page load
     calculateWholesaleRate();
   });
