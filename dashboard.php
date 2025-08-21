@@ -179,7 +179,7 @@ if (isset($_REQUEST['orderdate']) && $_REQUEST['orderdate'] !== '') {
                             <?php
                             $current_date = date('Y-m-d'); // make sure this is defined
 
-                            $query = "SELECT SUM(grand_total) AS total_sales FROM orders WHERE order_date = '$current_date'";
+                            $query = "SELECT SUM(grand_total) AS total_sales FROM orders WHERE 1=1 $date_select";
                             $result = mysqli_query($dbc, $query);
 
                             if ($result) {
@@ -333,7 +333,7 @@ if (isset($_REQUEST['orderdate']) && $_REQUEST['orderdate'] !== '') {
                           <p class="small text-muted mb-0">Total Purchases Count</p>
                           <span class="h3 mb-0">
                             <?php
-                            @$total_purchases = mysqli_fetch_assoc(mysqli_query($dbc, "SELECT count(*) as total_orders FROM purchase where purchase_date='$current_date' "))['total_orders'];
+                            @$total_purchases = mysqli_fetch_assoc(mysqli_query($dbc, "SELECT count(*) as total_orders FROM purchase where 1=1 $date_select "))['total_orders'];
                             $total_purchases2 = isset($total_purchases) ? $total_purchases : "0";
                             echo number_format($total_purchases2);
                             ?>
@@ -637,7 +637,7 @@ if (isset($_REQUEST['orderdate']) && $_REQUEST['orderdate'] !== '') {
                           $cash_in_hand_sale = mysqli_fetch_array(mysqli_query($dbc, "SELECT count(*) as cash_in_hand,sum(grand_total) as cash_in_hand_amount FROM orders WHERE order_date = '$current_date' AND payment_type='cash_in_hand' "));
                           $credit_sale = mysqli_fetch_array(mysqli_query($dbc, "SELECT count(*) as credit_sale,sum(grand_total) as credit_sale_amount FROM orders WHERE order_date = '$current_date' AND payment_type='credit_sale' "));
 
-                          $cash_in_hand_pur = mysqli_fetch_array(mysqli_query($dbc, "SELECT count(*) as cash_in_hand,sum(grand_total) as cash_in_hand_amount FROM purchase WHERE purchase_date = '$current_date' AND payment_type='sale_purchase' "));
+                          $cash_in_hand_pur = mysqli_fetch_array(mysqli_query($dbc, "SELECT count(*) as cash_in_hand,sum(grand_total) as cash_in_hand_amount FROM purchase WHERE purchase_date = '$current_date' AND payment_type='cash_purchase' "));
                           $credit_pur = mysqli_fetch_array(mysqli_query($dbc, "SELECT count(*) as credit_sale,sum(grand_total) as credit_sale_amount FROM purchase WHERE purchase_date = '$current_date' AND payment_type='credit_purchase' "));
                           ?>
                           <tr>
