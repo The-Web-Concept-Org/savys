@@ -233,8 +233,8 @@ if (isset($_REQUEST['duplicate_product_id'])) {
                     <th>#</th>
                     <th>Image</th>
                     <th>Barcode</th>
-                    <th>Name</th>
-                    <th>Name Urdu</th>
+                    <th>Product Name</th>
+                    <!-- <th>Name Urdu</th> -->
                     <th>Brand/Category</th>
                     <?php if ($get_company['stock_manage'] == 1): ?>
                       <th>Quantity In Stock</th>
@@ -259,8 +259,13 @@ if (isset($_REQUEST['duplicate_product_id'])) {
                           width="100" height="100" alt="">
                       </td>
                       <td><?= $r['product_code'] ?></td>
-                      <td><?= $r['product_name'] ?></td>
-                      <td><?= $r['product_name_urdu'] ?></td>
+                      <td>
+                        <?= ucwords($r['product_name']) ?>
+                        <?= (!empty($r['color']) || !empty($r['size']))
+                          ? " - (" . ucwords($r['color']) . " | " . ucwords($r['size']) . ")"
+                          : "" ?>
+                      </td>
+                      <!-- <td><?= $r['product_name_urdu'] ?></td> -->
                       <td><?= $brandFetched['brand_name'] ?>/<?= $categoryFetched['categories_name'] ?></td>
 
 
@@ -268,19 +273,26 @@ if (isset($_REQUEST['duplicate_product_id'])) {
                       $fetchProductInventory = mysqli_fetch_assoc(mysqli_query($dbc, "SELECT SUM(quantity_instock) as quantity_instock FROM inventory WHERE product_id = '{$r['product_id']}'"));
                       ?>
 
-                      <?php if ($fetchProductInventory['quantity_instock'] > $r['alert_at']): ?>
-                        <td>
-                          <span class="badge p-1 badge-success d-print-none">
-                            <?= $fetchProductInventory['quantity_instock'] ?>
-                          </span>
-                        </td>
+                      <?php if (!empty($fetchProductInventory) && isset($fetchProductInventory['quantity_instock'])): ?>
+                        <?php if ($fetchProductInventory['quantity_instock'] > $r['alert_at']): ?>
+                          <td>
+                            <span class="badge p-1 badge-success d-print-none">
+                              <?= $fetchProductInventory['quantity_instock'] ?>
+                            </span>
+                          </td>
+                        <?php else: ?>
+                          <td>
+                            <span class="badge p-1 badge-danger">
+                              <?= $fetchProductInventory['quantity_instock'] ?>
+                            </span>
+                          </td>
+                        <?php endif; ?>
                       <?php else: ?>
                         <td>
-                          <span class="badge p-1 badge-danger">
-                            <?= $fetchProductInventory['quantity_instock'] ?>
-                          </span>
+                          <span class="badge p-1 badge-secondary">N/A</span>
                         </td>
                       <?php endif; ?>
+
 
                       <td class="d-print-none">
                         <?php if (@$userPrivileges['nav_edit'] == 1 || $fetchedUserRole == "admin"): ?>
