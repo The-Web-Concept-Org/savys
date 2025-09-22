@@ -13,8 +13,8 @@ $(document).ready(function () {
     console.log("DataTables version:", $.fn.dataTable.version);
     console.log("Buttons extension loaded:", typeof $.fn.dataTable.Buttons !== 'undefined');
     
-    // Initialize DataTables with Excel export for all dataTable classes (excluding purchase table)
-    $(".dataTable").not("#view_purchase_tb").DataTable({
+    // Initialize DataTables with Excel export for generic tables, but skip product_tb (server-side init on page)
+    $(".dataTable").not("#view_purchase_tb, #product_tb").DataTable({
     autoWidth: true,
     lengthMenu: [
       [10, 20, 50, -1],
@@ -271,3 +271,20 @@ $(document).ready(function () {
     });
   });
 });
+
+function previewImage(url) {
+  try {
+    Swal.fire({
+      imageUrl: url,
+      imageAlt: 'Preview',
+      showCloseButton: true,
+      showConfirmButton: false,
+      width: 'auto',
+      customClass: {
+        popup: 'p-0'
+      }
+    });
+  } catch (e) {
+    window.open(url, '_blank');
+  }
+}
