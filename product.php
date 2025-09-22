@@ -242,83 +242,7 @@ if (isset($_REQUEST['duplicate_product_id'])) {
                     <th class="d-print-none">Action</th>
                   </tr>
                 </thead>
-                <tbody>
-                  <?php
-                  $q = mysqli_query($dbc, "SELECT * FROM product WHERE status=1 ");
-                  $c = 0;
-                  while ($r = mysqli_fetch_assoc($q)) {
-                    @$brandFetched = fetchRecord($dbc, "brands", "brand_id", $r['brand_id']);
-                    @$categoryFetched = fetchRecord($dbc, "categories", "categories_id", $r['category_id']);
-                    $c++;
-                  ?>
-                    <tr>
-                      <td><?= $c ?></td>
-                      <td>
-                        <img
-                          src="./img/uploads/<?= !empty($r['product_image']) ? $r['product_image'] : 'SAVYS_Logo_Final.png' ?>"
-                          width="100" height="100" alt="">
-                      </td>
-                      <td><?= $r['product_code'] ?></td>
-                      <td>
-                        <?= ucwords($r['product_name']) ?>
-                        <?= (!empty($r['color']) || !empty($r['size']))
-                          ? " - (" . ucwords($r['color']) . " | " . ucwords($r['size']) . ")"
-                          : "" ?>
-                      </td>
-                      <!-- <td><?= $r['product_name_urdu'] ?></td> -->
-                      <td><?= $brandFetched['brand_name'] ?>/<?= $categoryFetched['categories_name'] ?></td>
-
-
-                      <?php
-                      $fetchProductInventory = mysqli_fetch_assoc(mysqli_query($dbc, "SELECT SUM(quantity_instock) as quantity_instock FROM inventory WHERE product_id = '{$r['product_id']}'"));
-                      ?>
-
-                      <?php if (!empty($fetchProductInventory) && isset($fetchProductInventory['quantity_instock'])): ?>
-                        <?php if ($fetchProductInventory['quantity_instock'] > $r['alert_at']): ?>
-                          <td>
-                            <span class="badge p-1 badge-success d-print-none">
-                              <?= $fetchProductInventory['quantity_instock'] ?>
-                            </span>
-                          </td>
-                        <?php else: ?>
-                          <td>
-                            <span class="badge p-1 badge-danger">
-                              <?= $fetchProductInventory['quantity_instock'] ?>
-                            </span>
-                          </td>
-                        <?php endif; ?>
-                      <?php else: ?>
-                        <td>
-                          <span class="badge p-1 badge-secondary">N/A</span>
-                        </td>
-                      <?php endif; ?>
-
-
-                      <td class="d-print-none">
-                        <?php if (@$userPrivileges['nav_edit'] == 1 || $fetchedUserRole == "admin"): ?>
-                          <form action="product.php?act=add" method="POST" class="d-inline-block">
-                            <input type="hidden" name="edit_product_id" value="<?= base64_encode($r['product_id']) ?>">
-                            <button type="submit" class="btn btn-admin btn-sm m-1">Edit</button>
-                          </form>
-                        <?php endif; ?>
-
-                        <?php if (@$userPrivileges['nav_delete'] == 1 || $fetchedUserRole == "admin"): ?>
-                          <button type="button"
-                            onclick="deleteAlert('<?= $r['product_id'] ?>','product','product_id','product_tb')"
-                            class="btn btn-admin2 btn-sm m-1 d-inline-block">Delete</button>
-                        <?php endif; ?>
-
-                        <a href="print_barcode.php?id=<?= base64_encode($r['product_id']) ?>"
-                          class="btn btn-primary btn-sm m-1 d-inline-block">Barcode</a>
-
-                        <form action="product.php?act=add" method="POST" class="d-inline-block">
-                          <input type="hidden" name="duplicate_product_id" value="<?= base64_encode($r['product_id']) ?>">
-                          <button type="submit" class="btn btn-admin btn-sm m-1">Duplicate</button>
-                        </form>
-                      </td>
-                    </tr>
-                  <?php } ?>
-                </tbody>
+                <tbody></tbody>
               </table>
             </div>
           <?php endif ?>
@@ -393,5 +317,105 @@ if (isset($_REQUEST['duplicate_product_id'])) {
 
     // Calculate initial wholesale rate on page load
     calculateWholesaleRate();
+  });
+</script>
+<script type="text/javascript">
+  document.addEventListener('DOMContentLoaded', function () {
+    <?php if (@$_REQUEST['act'] != 'add'): ?>
+      var stockManage = <?= (int)$get_company['stock_manage'] ?>;
+      var columns = [];
+      columns.push({
+        data: 'row_id',
+        render: function(data, type, row, meta) {
+          return meta.row + meta.settings._iDisplayStart + 1;
+        }
+      });
+      columns.push({
+        data: 'product_image', orderable: false, searchable: false,
+        render: function(data, type, row) {
+          var file = data && data.length ? data : 'SAVYS_Logo_Final.png';
+          var url = './img/uploads/' + file;
+          return '<a href="javascript:void(0)" onclick="previewImage(\'' + url.replace(/'/g, "\\'") + '\')">'
+                 + '<img src="' + url.replace(/"/g,'&quot;') + '" width="100" height="100" alt="">'
+                 + '</a>';
+        }
+      });
+      columns.push({ data: 'product_code' });
+      columns.push({
+        data: 'product_name',
+        render: function(data, type, row) {
+          var name = (data || '');
+          var color = (row.color || '').trim();
+          var size = (row.size || '').trim();
+          if (color || size) {
+            name += ' - (' + (color.charAt(0).toUpperCase() + color.slice(1)) + ' | ' + (size.charAt(0).toUpperCase() + size.slice(1)) + ')';
+          }
+          return name.replace(/</g,'&lt;').replace(/>/g,'&gt;');
+        }
+      });
+      columns.push({
+        data: null,
+        render: function(data, type, row) {
+          var brand = (row.brand_name || '');
+          var cat = (row.categories_name || '');
+          return brand.replace(/</g,'&lt;') + '/' + cat.replace(/</g,'&lt;');
+        }
+      });
+      if (stockManage === 1) {
+        columns.push({
+          data: 'quantity_instock', orderable: false, searchable: false,
+          render: function(data, type, row) {
+            var qty = Number(data || 0);
+            var alertAt = Number(row.alert_at || 0);
+            var cls = qty > alertAt ? 'badge-success d-print-none' : 'badge-danger';
+            return '<span class="badge p-1 ' + cls + '">' + qty + '</span>';
+          }
+        });
+      }
+      columns.push({
+        data: 'product_id', orderable: false, searchable: false,
+        render: function(data, type, row) {
+          var enc = window.btoa(String(data));
+          var btns = '';
+          btns += '<form action="product.php?act=add" method="POST" class="d-inline-block">'
+               + '<input type="hidden" name="edit_product_id" value="' + enc + '">'
+               + '<button type="submit" class="btn btn-admin btn-sm m-1">Edit</button>'
+               + '</form>';
+          btns += '<button type="button" onclick="deleteAlert(\'' + data + '\',\'product\',\'product_id\',\'product_tb\')" class="btn btn-admin2 btn-sm m-1 d-inline-block">Delete</button>';
+          btns += '<a href="print_barcode.php?id=' + enc + '" class="btn btn-primary btn-sm m-1 d-inline-block">Barcode</a>';
+          btns += '<form action="product.php?act=add" method="POST" class="d-inline-block">'
+               + '<input type="hidden" name="duplicate_product_id" value="' + enc + '">'
+               + '<button type="submit" class="btn btn-admin btn-sm m-1">Duplicate</button>'
+               + '</form>';
+          return btns;
+        }
+      });
+
+      $('#product_tb').DataTable({
+        processing: true,
+        serverSide: true,
+        autoWidth: true,
+        lengthMenu: [[10, 20, 50, -1],[10, 20, 50, 'All']],
+        order: [[0, 'desc']],
+        dom: 'Bfrtip',
+        buttons: [
+          {
+            extend: 'excel',
+            text: 'Export to Excel',
+            className: 'btn btn-success btn-sm',
+            exportOptions: { columns: ':visible' }
+          }
+        ],
+        ajax: {
+          url: 'php_action/products_datatable.php',
+          type: 'POST',
+          data: function (d) {
+            d.stock_manage = stockManage;
+          }
+        },
+        columns: columns,
+        responsive: true
+      });
+    <?php endif; ?>
   });
 </script>
